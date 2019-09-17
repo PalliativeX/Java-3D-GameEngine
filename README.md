@@ -1,2 +1,1 @@
-# Java-3D-GameEngine
-A 3D Game Engine based on the tutorial of TheBennyBox
+A link to the tutorial: https://www.youtube.com/playlist?list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5
