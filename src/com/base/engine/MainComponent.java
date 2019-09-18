@@ -2,7 +2,6 @@ package com.base.engine;
 
 public class MainComponent
 {
-
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
     public static final String TITLE = "3D Engine";
@@ -55,6 +54,7 @@ public class MainComponent
 
             unprocessedTime += passedTime / (double)Time.SECOND;
 
+            // updating the context
             while (unprocessedTime > frameTime) {
                 render = true;
 
@@ -65,6 +65,7 @@ public class MainComponent
                     stop();
 
                 Time.setDelta(frameTime);
+                Input.update();
 
                 game.input();
                 game.update();
@@ -76,6 +77,7 @@ public class MainComponent
             }
             }
 
+            // rendering if the context was updated
             if (render) {
                 render();
                 frames++;
@@ -87,6 +89,7 @@ public class MainComponent
                     e.printStackTrace();
                 }
             }
+
         }
 
         cleanUp();
