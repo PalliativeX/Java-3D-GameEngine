@@ -1,5 +1,6 @@
 package com.base.engine;
 
+import com.base.engine.math.Vector2f;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -34,12 +35,14 @@ public class Input
 
         upKeys.clear();
         for (int i = 0; i < NUM_KEYCODES; i++) {
+            // if a key is not pressed but it was in the prev. frame
             if (!getKey(i) && currentKeys.contains(i))
                 upKeys.add(i);
         }
 
         downKeys.clear();
         for (int i = 0; i < NUM_KEYCODES; i++) {
+            // if key has been pressed and it hasn't been pressed in the prev. frame
             if (getKey(i) && !currentKeys.contains(i))
                 downKeys.add(i);
         }
@@ -91,4 +94,6 @@ public class Input
     {
         return new Vector2f(Mouse.getX(), Mouse.getY());
     }
+
+
 }
