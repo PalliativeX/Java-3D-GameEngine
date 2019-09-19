@@ -23,10 +23,8 @@ public class Matrix4f
     {
         Matrix4f result = new Matrix4f();
 
-        for(int i = 0; i < 4; i++)
-        {
-            for(int j = 0; j < 4; j++)
-            {
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < 4; j++) {
                 r.set(i, j, m[i][0] * r.get(0, j) +
                                  m[i][1] * r.get(1, j) +
                                  m[i][2] * r.get(2, j) +
