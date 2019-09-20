@@ -5,6 +5,17 @@ import com.base.engine.math.Vector3f;
 
 public class Transform
 {
+    private static class Projection
+    {
+        // clip space on Z plane
+        private static float zNear;
+        private static float zFar;
+
+        private static float width;
+        private static float height;
+        private static float fov;
+    }
+
     private Vector3f translation;
     private Vector3f rotation;
     private Vector3f scale;
@@ -16,6 +27,16 @@ public class Transform
         scale = new Vector3f(1.f, 1.f, 1.f);
     }
 
+    public static void setProjection(float fov, float width, float height, float zNear, float zFar)
+    {
+        Transform.Projection.width = width;
+        Transform.Projection.height = height;
+        Transform.Projection.fov = fov;
+        Transform.Projection.zNear = zNear;
+        Transform.Projection.zFar = zFar;
+
+    }
+
     public Matrix4f getTransformation()
     {
         Matrix4f translationMatrix = new Matrix4f().initTranslation(translation.getX(), translation.getY(), translation.getZ());
@@ -23,6 +44,15 @@ public class Transform
         Matrix4f scaleMatrix = new Matrix4f().initScale(scale.getX(), scale.getY(), scale.getZ());
 
         return translationMatrix.multiply(rotationMatrix.multiply(scaleMatrix));
+    }
+
+    public Matrix4f getProjectedTransformation()
+    {
+        Matrix4f transformationMatrix = getTransformation();
+        Matrix4f projectionMatrix = new Matrix4f().initProjection(Projection.fov, Projection.width, Projection.height, Projection.zNear, Projection.zFar);
+
+
+        return projectionMatrix.multiply(transformationMatrix);
     }
 
     public Vector3f getTranslation() {
