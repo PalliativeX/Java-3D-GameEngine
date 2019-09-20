@@ -61,7 +61,14 @@ public class ResourceLoader
                     indices.add(Integer.parseInt(tokens[1].split("/")[0]) - 1);
                     indices.add(Integer.parseInt(tokens[2].split("/")[0]) - 1);
                     indices.add(Integer.parseInt(tokens[3].split("/")[0]) - 1);
+
+                    if (tokens.length > 4) {
+                        indices.add(Integer.parseInt(tokens[1].split("/")[0]) - 1);
+                        indices.add(Integer.parseInt(tokens[3].split("/")[0]) - 1);
+                        indices.add(Integer.parseInt(tokens[4].split("/")[0]) - 1);
+                    }
                 }
+
             }
 
             meshReader.close();
