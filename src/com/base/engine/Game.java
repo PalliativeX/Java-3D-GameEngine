@@ -39,9 +39,13 @@ public class Game
             System.out.println("We've just released up the mouse!");
     }
 
+    float temp = 0.f;
+
     public void update()
     {
+        temp += Time.getDelta();
 
+        shader.setUniformf("uniformFloat", (float)Math.sin(temp));
     }
 
     public void render()
