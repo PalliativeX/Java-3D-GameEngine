@@ -6,17 +6,17 @@ import com.base.engine.math.Vector3f;
 public class Game
 {
     private Mesh mesh;
-    private Shader shader;
+    private BasicShader shader;
     private Transform transform;
     private Camera camera;
-    private Texture texture;
+    private Material material;
 
     public Game()
     {
         mesh = new Mesh();
-        shader = new Shader();
         camera = new Camera();
-        texture = ResourceLoader.loadTexture("background.jpg");
+        material = new Material(ResourceLoader.loadTexture("background.jpg"), new Vector3f(1, 0, 1));
+        shader = new BasicShader();
 
         Vertex[] vertices = new Vertex[] { new Vertex(new Vector3f(-1, - 1, 0), new Vector2f(0, 0)),
                                            new Vertex(new Vector3f( 0,   1, 0), new Vector2f(0.5f, 0)),
@@ -34,9 +34,6 @@ public class Game
         Transform.setProjection(70.f, MainComponent.WIDTH, MainComponent.HEIGHT, 0.1f, 1000.f);
         Transform.setCamera(camera);
 
-        shader.addVertexShader(ResourceLoader.loadShader("basicVertex.vert"));
-        shader.addFragmentShader(ResourceLoader.loadShader("basicFragment.frag"));
-        shader.compileShader();
     }
 
     public void input()
@@ -59,9 +56,9 @@ public class Game
 
     public void render()
     {
+        RenderUtil.setClearColor(Transform.getCamera().getPos().divide(2048f).abs());
         shader.bind();
-        shader.setUniformMat4("transform", transform.getProjectedTransformation());
-        texture.bind();
+        shader.updateUniforms(transform.getTransformation(), transform.getProjectedTransformation(), material);
         mesh.draw();
     }
 

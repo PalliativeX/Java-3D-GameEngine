@@ -20,14 +20,11 @@ public class Vector2f
         return this.x * vec.getX() + this.y * vec.getY();
     }
 
-    public Vector2f normalize()
+    public Vector2f normalized()
     {
         float length = length();
 
-        x /= length;
-        y /= length;
-
-        return this;
+        return new Vector2f(x / length, y / length);
     }
 
     public Vector2f rotate(float angle)
@@ -37,6 +34,11 @@ public class Vector2f
         double sin = Math.sin(angle);
 
         return new Vector2f((float)(x * cos - y * sin),(float)( x * sin + y * cos));
+    }
+
+    public Vector2f abs()
+    {
+        return new Vector2f(Math.abs(x), Math.abs(y));
     }
 
     public Vector2f add(Vector2f r)

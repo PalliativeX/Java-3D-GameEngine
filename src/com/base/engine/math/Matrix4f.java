@@ -86,10 +86,10 @@ public class Matrix4f
     public Matrix4f initCamera(Vector3f forward, Vector3f up)
     {
         Vector3f f = forward;
-        f.normalize();
+        f.normalized();
 
         Vector3f r = up;
-        r.normalize();
+        r.normalized();
         r = r.cross(f);
 
         Vector3f u = f.cross(r);
@@ -111,9 +111,9 @@ public class Matrix4f
             for(int j = 0; j < 4; j++)
             {
                 result.set(i, j, m[i][0] * r.get(0, j) +
-                                   m[i][1] * r.get(1, j) +
-                                   m[i][2] * r.get(2, j) +
-                                   m[i][3] * r.get(3, j));
+                                      m[i][1] * r.get(1, j) +
+                                      m[i][2] * r.get(2, j) +
+                                      m[i][3] * r.get(3, j));
             }
         }
 
@@ -122,7 +122,12 @@ public class Matrix4f
 
     public float[][] getM()
     {
-        return m;
+        float[][] res = new float[4][4];
+
+        for (int i = 0; i < 4; i++)
+            System.arraycopy(m[i], 0, res[i], 0, 4);
+
+        return res;
     }
 
     public float get(int x, int y)
