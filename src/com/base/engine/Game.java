@@ -1,7 +1,7 @@
 package com.base.engine;
 
+import com.base.engine.math.Vector2f;
 import com.base.engine.math.Vector3f;
-import org.lwjgl.input.Keyboard;
 
 public class Game
 {
@@ -9,24 +9,26 @@ public class Game
     private Shader shader;
     private Transform transform;
     private Camera camera;
+    private Texture texture;
 
     public Game()
     {
-        mesh = ResourceLoader.loadMesh("box.obj");//new Mesh();
+        mesh = new Mesh();
         shader = new Shader();
         camera = new Camera();
+        texture = ResourceLoader.loadTexture("background.jpg");
 
-        /*Vertex[] vertices = new Vertex[] { new Vertex(new Vector3f(-1, - 1, 0)),
-                                           new Vertex(new Vector3f( 0,   1, 0)),
-                                           new Vertex(new Vector3f( 1,  -1, 0)),
-                                           new Vertex(new Vector3f(0, -1, 1)) };
+        Vertex[] vertices = new Vertex[] { new Vertex(new Vector3f(-1, - 1, 0), new Vector2f(0, 0)),
+                                           new Vertex(new Vector3f( 0,   1, 0), new Vector2f(0.5f, 0)),
+                                           new Vertex(new Vector3f( 1,  -1, 0), new Vector2f(1.f, 0)),
+                                           new Vertex(new Vector3f(0, -1, 1),   new Vector2f(0.f, 0.5f)) };
 
         int[] indices = new int[] { 0, 1, 3,
                                     3, 1, 2,
                                     2, 1, 0,
                                     0, 2, 3 };
 
-        mesh.addVertices(vertices, indices);*/
+        mesh.addVertices(vertices, indices);
 
         transform = new Transform();
         Transform.setProjection(70.f, MainComponent.WIDTH, MainComponent.HEIGHT, 0.1f, 1000.f);
@@ -42,7 +44,7 @@ public class Game
         camera.input();
     }
 
-    float temp = 0.f;
+    private float temp = 0.f;
 
     public void update()
     {
@@ -52,13 +54,14 @@ public class Game
 
         transform.setTranslation(0.f, 0.f, 5.f);
         transform.setRotation(0.f, sinTemp * 180, 0.f);
-        transform.setScale(0.7f * sinTemp, 0.7f * sinTemp, 0.7f * sinTemp);
+        transform.setScale(1.5f * sinTemp, 1.5f * sinTemp, 1.5f * sinTemp);
     }
 
     public void render()
     {
         shader.bind();
         shader.setUniformMat4("transform", transform.getProjectedTransformation());
+        texture.bind();
         mesh.draw();
     }
 
