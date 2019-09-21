@@ -1,10 +1,20 @@
-package com.base.engine;
+package com.base.engine.shaders;
 
+import com.base.engine.Material;
+import com.base.engine.RenderUtil;
+import com.base.engine.ResourceLoader;
 import com.base.engine.math.Matrix4f;
 
 public class BasicShader extends Shader
 {
-    public BasicShader()
+    private static final BasicShader instance = new BasicShader();
+
+    public static BasicShader getInstance()
+    {
+        return instance;
+    }
+
+    private BasicShader()
     {
         super();
 

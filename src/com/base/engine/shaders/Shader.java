@@ -1,5 +1,7 @@
-package com.base.engine;
+package com.base.engine.shaders;
 
+import com.base.engine.Material;
+import com.base.engine.Util;
 import com.base.engine.math.Matrix4f;
 import com.base.engine.math.Vector3f;
 
