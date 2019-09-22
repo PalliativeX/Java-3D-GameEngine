@@ -1,4 +1,4 @@
-package com.base.engine;
+package com.base.engine.light;
 
 import com.base.engine.math.Vector3f;
 

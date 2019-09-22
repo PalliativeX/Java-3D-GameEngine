@@ -4,6 +4,7 @@ import com.base.engine.math.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 
 public class RenderUtil
@@ -34,7 +35,7 @@ public class RenderUtil
 
     public static void initGraphics()
     {
-        glClearColor(0.3f, 0.2f, 0.6f, 0.f);
+        glClearColor(0.1f, 0.1f, 0.1f, 0.f);
 
         glFrontFace(GL_CW);
         glCullFace(GL_BACK);
@@ -42,10 +43,10 @@ public class RenderUtil
 
         glEnable(GL_DEPTH_TEST);
 
-        // @TODO: depth clamp
+        glEnable(GL_DEPTH_CLAMP);
 
         glEnable(GL_TEXTURE_2D);
-        glEnable(GL_FRAMEBUFFER_SRGB); // gamma correction
+        //glEnable(GL_FRAMEBUFFER_SRGB); // gamma correction
     }
 
     public static String getOpenGLVersion()
