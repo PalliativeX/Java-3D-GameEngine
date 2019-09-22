@@ -25,7 +25,7 @@ public class DirectionalLight
     }
 
     public void setDirection(Vector3f direction) {
-        this.direction = direction;
+        this.direction = direction.normalized();
     }
 
 

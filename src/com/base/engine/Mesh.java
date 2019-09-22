@@ -2,6 +2,10 @@ package com.base.engine;
 
 import com.base.engine.math.Vector3f;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -12,14 +16,33 @@ public class Mesh
    private int ibo;
    private int size;
 
-   public Mesh()
+
+
+   public Mesh(String fileName)
+   {
+       initMeshData();
+       loadMesh(fileName);
+   }
+
+    public Mesh(Vertex[] vertices, int[] indices)
+    {
+        this(vertices, indices, false);
+    }
+
+    public Mesh(Vertex[] vertices, int[] indices, boolean calcNormals)
+    {
+        initMeshData();
+        addVertices(vertices, indices, calcNormals);
+    }
+
+   private void initMeshData()
    {
        vbo = glGenBuffers();
        ibo = glGenBuffers();
        size = 0;
    }
 
-    public void addVertices(Vertex[] vertices, int[] indices, boolean calcNormals)
+    private void addVertices(Vertex[] vertices, int[] indices, boolean calcNormals)
     {
         if (calcNormals) {
             calcNormals(vertices, indices);
@@ -33,11 +56,6 @@ public class Mesh
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, Util.createFlippedBuffer(indices), GL_STATIC_DRAW);
     }
-
-   public void addVertices(Vertex[] vertices, int[] indices)
-   {
-       addVertices(vertices, indices, false);
-   }
 
    public void draw()
    {
@@ -79,6 +97,67 @@ public class Mesh
        for (int i = 0; i < vertices.length; i++)
            vertices[i].setNormal(vertices[i].getNormal().normalized());
    }
+
+    private void loadMesh(String fileName)
+    {
+        String[] splitArray = fileName.split("\\.");
+        String ext = splitArray[splitArray.length - 1];
+
+        if (!ext.equals("obj")) {
+            System.err.println("Error: File format not supported for mesh data: " + ext);
+            new Exception().printStackTrace();
+            System.exit(1);
+        }
+
+        ArrayList<Vertex> vertices = new ArrayList<>();
+        ArrayList<Integer> indices = new ArrayList<>();
+
+        BufferedReader meshReader = null;
+        try {
+            meshReader = new BufferedReader(new FileReader("./res/models/" + fileName));
+            String line;
+
+            while ((line = meshReader.readLine()) != null) {
+                String[] tokens = line.split(" ");
+                tokens = Util.removeEmptyString(tokens);
+
+                if (tokens.length == 0 || tokens[0].equals("#"))
+                    continue;
+                else if (tokens[0].equals("v")) {
+                    vertices.add(new Vertex(new Vector3f(Float.valueOf(tokens[1]),
+                            Float.valueOf(tokens[2]),
+                            Float.valueOf(tokens[3]))));
+                }
+                else if (tokens[0].equals("f")) {
+                    indices.add(Integer.parseInt(tokens[1].split("/")[0]) - 1);
+                    indices.add(Integer.parseInt(tokens[2].split("/")[0]) - 1);
+                    indices.add(Integer.parseInt(tokens[3].split("/")[0]) - 1);
+
+                    if (tokens.length > 4) {
+                        indices.add(Integer.parseInt(tokens[1].split("/")[0]) - 1);
+                        indices.add(Integer.parseInt(tokens[3].split("/")[0]) - 1);
+                        indices.add(Integer.parseInt(tokens[4].split("/")[0]) - 1);
+                    }
+                }
+
+            }
+
+            meshReader.close();
+
+            Vertex[] vertexData = new Vertex[vertices.size()];
+            vertices.toArray(vertexData);
+
+            Integer[] indexData = new Integer[indices.size()];
+            indices.toArray(indexData);
+
+            addVertices(vertexData, Util.toIntArray(indexData), true);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+    }
 
 
 }

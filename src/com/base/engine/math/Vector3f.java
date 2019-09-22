@@ -51,11 +51,7 @@ public class Vector3f
 
         Quaternion w = rotation.multiply(this).multiply(conjugate);
 
-        x = w.getX();
-        y = w.getY();
-        z = w.getZ();
-
-        return this;
+        return new Vector3f(w.getX(), w.getY(), w.getZ());
     }
 
     public Vector3f abs()

@@ -19,11 +19,8 @@ public class Camera
     public Camera(Vector3f pos, Vector3f forward, Vector3f up)
     {
         this.pos = pos;
-        this.forward = forward;
-        this.up = up;
-
-        up.normalized();
-        forward.normalized();
+        this.forward = forward.normalized();
+        this.up = up.normalized();
     }
 
     private boolean mouseLocked = false;
@@ -31,7 +28,7 @@ public class Camera
 
     public void input()
     {
-        float sensitivity = .5f;
+        float sensitivity = .4f;
         float moveAmount = (float)(10 * Time.getDelta());
         //float rotationAmount = (float)(100 * Time.getDelta());
 
@@ -89,7 +86,7 @@ public class Camera
     {
         Vector3f hAxis = yAxis.cross(forward).normalized();
 
-        forward.rotate(angle, yAxis).normalized();
+        forward = forward.rotate(angle, yAxis).normalized();
 
         up = forward.cross(hAxis).normalized();
     }
@@ -98,23 +95,19 @@ public class Camera
     {
         Vector3f hAxis = yAxis.cross(forward).normalized();
 
-        forward.rotate(angle, hAxis).normalized();
+        forward = forward.rotate(angle, hAxis).normalized();
 
         up = forward.cross(hAxis).normalized();
     }
 
     public Vector3f getLeft()
     {
-        Vector3f left = forward.cross(up);
-        left.normalized();
-        return left;
+        return forward.cross(up).normalized();
     }
 
     public Vector3f getRight()
     {
-        Vector3f right = up.cross(forward);
-        right.normalized();
-        return right;
+        return up.cross(forward).normalized();
     }
 
     public Vector3f getPos()

@@ -1,9 +1,6 @@
 package com.base.engine;
 
-import com.base.engine.light.Attenuation;
-import com.base.engine.light.BaseLight;
-import com.base.engine.light.DirectionalLight;
-import com.base.engine.light.PointLight;
+import com.base.engine.light.*;
 import com.base.engine.math.Vector2f;
 import com.base.engine.math.Vector3f;
 import com.base.engine.shaders.PhongShader;
@@ -16,14 +13,16 @@ public class Game
     private Camera camera;
     private Material material;
 
-    PointLight pLight1 = new PointLight(new BaseLight(new Vector3f(1, 0.5f, 0), 0.8f), new Attenuation(1, 0, 0), new Vector3f(-2, 3, 5f), 6);
-    PointLight pLight2 = new PointLight(new BaseLight(new Vector3f(0, 0f, 1), 0.8f), new Attenuation(1, 0, 0), new Vector3f(2,0,7f), 6);
+    private PointLight pLight1 = new PointLight(new BaseLight(new Vector3f(1,0.5f,0), 0.8f), new Attenuation(0,0,1), new Vector3f(-2,0,5f), 10);
+    private PointLight pLight2 = new PointLight(new BaseLight(new Vector3f(0,0.5f,1), 0.8f), new Attenuation(0,0,1), new Vector3f(2,0,7f), 10);
+
+    //SpotLight sLight1 = new SpotLight(new PointLight(new BaseLight(new Vector3f(1,1f,1f), 2.f), new Attenuation(0,0,0.1f), new Vector3f(1,1,1f), 30),
+       //     new Vector3f(1,1,1), 0.4f);
 
     public Game()
     {
-        mesh = new Mesh();
         camera = new Camera();
-        material = new Material(ResourceLoader.loadTexture("test.png"), new Vector3f(1, 1, 1), 1, 8);
+        material = new Material(new Texture("background.jpg"), new Vector3f(1, 1, 1), 1, 8);
         shader = PhongShader.getInstance();
         transform = new Transform();
 
@@ -36,19 +35,21 @@ public class Game
                 new Vertex( new Vector3f(fieldWidth * 3, 0.0f, fieldDepth * 3), new Vector2f(1.0f, 1.0f))};
 
         int indices[] = { 0, 1, 2,
-                2, 1, 3};
+                          2, 1, 3};
 
-        mesh.addVertices(vertices, indices, true);
+        mesh = new Mesh(vertices, indices, true);
 
 
-        Transform.setProjection(70.f, MainComponent.WIDTH, MainComponent.HEIGHT, 0.1f, 1000.f);
+        Transform.setProjection(50.f, MainComponent.WIDTH, MainComponent.HEIGHT, 0.1f, 500.f);
         Transform.setCamera(camera);
 
         PhongShader.setAmbientLight(new Vector3f(0.10f, 0.10f, 0.10f));
-        PhongShader.setDirectionalLight(new DirectionalLight(new BaseLight(new Vector3f(1, 1, 1), 0.6f), new Vector3f(1, 1, 1)));
+        PhongShader.setDirectionalLight(new DirectionalLight(new BaseLight(new Vector3f(1, 1, 1), 0.2f), new Vector3f(1, 1, 1)));
 
 
         PhongShader.setPointLights(new PointLight[] { pLight1, pLight2} );
+
+        //PhongShader.setSpotLights(new SpotLight[] { sLight1 });
     }
 
     public void input()
@@ -67,6 +68,12 @@ public class Game
         transform.setTranslation(0.f, -1.f, 5.f);
         //transform.setRotation(0.f, sinTemp * 180, 0.f);
         //transform.setScale(2.f, 2.f, 2.f);
+
+        pLight1.setPosition(new Vector3f(3,0,8.0f * (float)(Math.sin(temp) + 1.0/2.0) + 10));
+        pLight2.setPosition(new Vector3f(7,0,8.0f * (float)(Math.cos(temp) + 1.0/2.0) + 10));
+
+        //sLight1.getPointLight().setPosition(camera.getPos());
+        //sLight1.setDirection(camera.getForward().normalized());
     }
 
     public void render()
