@@ -5,7 +5,7 @@ const int MAX_SPOT_LIGHTS = 4;
 
 in vec2 TexCoord;
 in vec3 Normal;
-in vec3 WorldPos;
+in vec3 FragPos;
 
 out vec4 fragColor;
 
@@ -100,7 +100,7 @@ vec4 calcLight(BaseLight base, vec3 direction, vec3 normal)
     diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
 
     // calculating specular color
-    vec3 directionToEye = normalize(eyePos - WorldPos);
+    vec3 directionToEye = normalize(eyePos - FragPos);
     vec3 reflectDir = normalize(reflect(direction, normal));
 
     float specularFactor = dot(directionToEye, reflectDir);
@@ -121,11 +121,11 @@ vec4 calcDirectionalLight(DirectionalLight directionalLight, vec3 normal)
 
 vec4 calcPointLight(PointLight pointLight, vec3 normal)
 {
-  vec3 lightDirection = WorldPos - pointLight.position;
+  vec3 lightDirection = FragPos - pointLight.position;
   float distanceToPoint = length(lightDirection);
 
-  //if (distanceToPoint > pointLight.range)
-   // return vec4(0, 0, 0, 0);
+  if (distanceToPoint > pointLight.range)
+   return vec4(0, 0, 0, 0);
 
   lightDirection = normalize(lightDirection);
 
@@ -141,7 +141,7 @@ vec4 calcPointLight(PointLight pointLight, vec3 normal)
 
 vec4 calcSpotLight(SpotLight spotLight, vec3 normal)
 {
-  vec3 lightDir = normalize(WorldPos - spotLight.pointLight.position);
+  vec3 lightDir = normalize(FragPos - spotLight.pointLight.position);
   float spotFactor = dot(lightDir, spotLight.direction);
 
   vec4 color = vec4(0, 0, 0, 0);

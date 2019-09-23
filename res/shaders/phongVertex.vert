@@ -5,7 +5,7 @@ layout (location = 2) in vec3 normal;
 
 out vec2 TexCoord;
 out vec3 Normal;
-out vec3 WorldPos;
+out vec3 FragPos;
 
 uniform mat4 transform;
 uniform mat4 transformProjected;
@@ -16,5 +16,5 @@ void main()
     TexCoord = texCoord;
     Normal = (transform * vec4(normal, 0.0)).xyz;
     //Normal = mat3(transpose(inverse(transform))) * normal;
-    WorldPos = (transform * vec4(position, 1.0)).xyz;
+    FragPos = (transform * vec4(position, 1.0)).xyz;
 }
