@@ -1,36 +1,31 @@
 package com.base.engine.core;
 
-import com.base.engine.rendering.RenderUtil;
 import com.base.engine.rendering.Window;
 
 public class CoreEngine
 {
     private boolean isRunning;
     private Game game;
+    private RenderingEngine renderingEngine;
+
     private int width;
     private int height;
     private double frameTime;
 
+
     public CoreEngine(int width, int height, double framerate, Game game)
     {
-
         isRunning = false;
         this.game = game;
         this.width = width;
         this.height = height;
-        this.frameTime = 1/framerate;
-    }
-
-    private void initRenderingSystem()
-    {
-        System.out.println(RenderUtil.getOpenGLVersion());
-        RenderUtil.initGraphics();
+        this.frameTime = 1.0 / framerate;
     }
 
     public void createWindow(String title)
     {
         Window.createWindow(width, height, title);
-        initRenderingSystem();
+        renderingEngine = new RenderingEngine();
     }
 
     public void start()
@@ -84,12 +79,13 @@ public class CoreEngine
                 Time.setDelta(frameTime);
 
                 game.input();
+                renderingEngine.input();
                 Input.update();
 
                 game.update();
 
                 if (frameCounter >= Time.SECOND) {
-                    System.out.println(frames);
+                    //System.out.println(frames);
                     frames = 0;
                     frameCounter = 0;
             }
@@ -97,7 +93,8 @@ public class CoreEngine
 
             // rendering if the context was updated
             if (render) {
-                render();
+                renderingEngine.render(game.getRootObject());
+                Window.render();
                 frames++;
             }
             else {
@@ -113,18 +110,10 @@ public class CoreEngine
         cleanUp();
     }
 
-    private void render()
-    {
-        RenderUtil.clearScreen();
-        game.render();
-        Window.render();
-    }
-
     private void cleanUp()
     {
         Window.dispose();
     }
-
 
 
 }

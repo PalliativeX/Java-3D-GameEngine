@@ -2,6 +2,7 @@ package com.base.engine.rendering;
 
 import com.base.engine.core.Input;
 import com.base.engine.core.Time;
+import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Vector2f;
 import com.base.engine.core.math.Vector3f;
 
@@ -12,18 +13,24 @@ public class Camera
     private Vector3f pos;
     private Vector3f forward;
     private Vector3f up;
+    private Matrix4f projection;
 
-    public Camera()
+    public Camera(float fov, float aspectRatio, float zNear, float zFar)
     {
-        this(new Vector3f(0.f, 0.f, 0.f), new Vector3f(0.f, 0.f, 1.f), new Vector3f(0.f, 1.f, 0.f));
+        this.pos     = new Vector3f(0, 0, 0);
+        this.forward = new Vector3f(0, 0, 1).normalized();
+        this.up      = new Vector3f(0, 1, 0).normalized();
+        this.projection = new Matrix4f().initPerspective(fov, aspectRatio, zNear, zFar);
     }
 
-    public Camera(Vector3f pos, Vector3f forward, Vector3f up)
+    public Matrix4f getViewProjection()
     {
-        this.pos = pos;
-        this.forward = forward.normalized();
-        this.up = up.normalized();
+        Matrix4f cameraRotation = new Matrix4f().initRotation(forward, up);
+        Matrix4f cameraTranslation = new Matrix4f().initTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
+
+        return projection.multiply(cameraRotation.multiply(cameraTranslation));
     }
+
 
     private boolean mouseLocked = false;
     private Vector2f centerPosition = new Vector2f(Window.getWidth()/2, Window.getHeight()/2);

@@ -1,5 +1,8 @@
 package com.base.engine.rendering.shaders;
 
+import com.base.engine.core.RenderingEngine;
+import com.base.engine.core.math.Transform;
+import com.base.engine.rendering.Camera;
 import com.base.engine.rendering.Material;
 import com.base.engine.core.Util;
 import com.base.engine.core.math.Matrix4f;
@@ -14,6 +17,7 @@ import static org.lwjgl.opengl.GL32.*;
 
 public class Shader
 {
+    private RenderingEngine renderingEngine;
     private int program;
     private HashMap<String, Integer> uniforms;
 
@@ -33,7 +37,8 @@ public class Shader
         glUseProgram(program);
     }
 
-    public void updateUniforms(Matrix4f worldMatrix, Matrix4f projectedMatrix, Material material)
+
+    public void updateUniforms(Transform transform, Material material)
     {
 
     }
@@ -143,7 +148,7 @@ public class Shader
         BufferedReader shaderReader = null;
 
         try {
-            shaderReader = new BufferedReader(new FileReader("./res/shaders/" + fileName));
+            shaderReader = new BufferedReader(new FileReader("./resources/shaders/" + fileName));
             String line;
 
             while((line = shaderReader.readLine()) != null) {
@@ -160,5 +165,16 @@ public class Shader
 
         return shaderSource.toString();
     }
+
+    public void setRenderingEngine(RenderingEngine renderingEngine)
+    {
+        this.renderingEngine = renderingEngine;
+    }
+
+    public RenderingEngine getRenderingEngine()
+    {
+        return renderingEngine;
+    }
+
 
 }

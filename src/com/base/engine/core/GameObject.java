@@ -1,6 +1,7 @@
 package com.base.engine.core;
 
 import com.base.engine.core.math.Transform;
+import com.base.engine.rendering.shaders.Shader;
 
 import java.util.ArrayList;
 
@@ -45,13 +46,13 @@ public class GameObject
             child.update();
     }
 
-    public void render()
+    public void render(Shader shader)
     {
         for (GameComponent component : components)
-            component.render(transform);
+            component.render(transform, shader);
 
         for (GameObject child : children)
-            child.render();
+            child.render(shader);
     }
 
     public Transform getTransform()

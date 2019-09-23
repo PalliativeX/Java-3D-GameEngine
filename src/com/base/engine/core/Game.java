@@ -2,8 +2,26 @@ package com.base.engine.core;
 
 public abstract class Game
 {
-    public abstract void init();
-    public abstract void input();
-    public abstract void update();
-    public abstract void render();
+    private GameObject root;
+
+    public void init() {}
+
+    public void input()
+    {
+        getRootObject().input();
+    }
+
+    public void update()
+    {
+        getRootObject().update();
+    }
+
+    public GameObject getRootObject()
+    {
+        if (root == null)
+            root = new GameObject();
+
+        return root;
+    }
+
 }

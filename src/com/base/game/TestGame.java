@@ -10,13 +10,11 @@ import com.base.engine.rendering.shaders.BasicShader;
 
 public class TestGame extends Game
 {
-    private Camera camera;
-
-    private GameObject root = new GameObject();
+    //private Camera camera;
 
     public void init()
     {
-        camera = new Camera();
+        //camera = new Camera();
 
         float fieldDepth = 10.0f;
         float fieldWidth = 10.0f;
@@ -27,18 +25,24 @@ public class TestGame extends Game
                 new Vertex( new Vector3f(fieldWidth * 3, 0.0f, fieldDepth * 3), new Vector2f(1.0f, 1.0f))};
 
         int indices[] = { 0, 1, 2,
-                2, 1, 3};
+                          2, 1, 3};
 
         Mesh mesh = new Mesh(vertices, indices, true);
         Material material = new Material(new Texture("background.jpg"), new Vector3f(1, 1, 1), 1, 8);
 
         MeshRenderer meshRenderer = new MeshRenderer(mesh, material);
-        root.addComponent(meshRenderer);
 
-        Transform.setProjection(50.f, Window.getWidth(), Window.getHeight(), 0.1f, 500.f);
-        Transform.setCamera(camera);
+        GameObject planeObject = new GameObject();
+        planeObject.addComponent(meshRenderer);
+        planeObject.getTransform().setTranslation(0.f, -1.f, 5.f);
+
+        getRootObject().addChild(planeObject);
+
+        //Transform.setProjection(50.f, Window.getWidth(), Window.getHeight(), 0.1f, 500.f);
+        //Transform.setCamera(camera);
     }
 
+    /*
     public void input()
     {
         camera.input();
@@ -54,7 +58,6 @@ public class TestGame extends Game
     public void render()
     {
         root.render();
-    }
-
+    }*/
 
 }
