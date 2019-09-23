@@ -10,11 +10,9 @@ import com.base.engine.rendering.shaders.BasicShader;
 
 public class TestGame extends Game
 {
-    //private Camera camera;
 
     public void init()
     {
-        //camera = new Camera();
 
         float fieldDepth = 10.0f;
         float fieldWidth = 10.0f;
@@ -38,26 +36,6 @@ public class TestGame extends Game
 
         getRootObject().addChild(planeObject);
 
-        //Transform.setProjection(50.f, Window.getWidth(), Window.getHeight(), 0.1f, 500.f);
-        //Transform.setCamera(camera);
     }
-
-    /*
-    public void input()
-    {
-        camera.input();
-        root.input();
-    }
-
-    public void update()
-    {
-        root.getTransform().setTranslation(0.f, -1.f, 5.f);
-        root.update();
-    }
-
-    public void render()
-    {
-        root.render();
-    }*/
 
 }

@@ -54,6 +54,13 @@ public class Vector3f
         return new Vector3f(w.getX(), w.getY(), w.getZ());
     }
 
+    // linearly interpolate between 2 points to find a point along
+    // the line between 2 endpoints
+    public Vector3f lerp(Vector3f dest, float lerpFactor)
+    {
+        return dest.subtract(this).multiply(lerpFactor).add(this);
+    }
+
     public Vector3f abs()
     {
         return new Vector3f(Math.abs(x), Math.abs(y), Math.abs(z));
@@ -89,6 +96,22 @@ public class Vector3f
         return new Vector3f(x / r, y / r, z / r);
     }
 
+    @Override
+    public String toString() {
+
+        return "Vector3f{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+    }
+
+    // vector swizzling
+    public Vector2f getXY() { return new Vector2f(x, y); }
+    public Vector2f getYZ() { return new Vector2f(y, z); }
+    public Vector2f getZX() { return new Vector2f(z, x); }
+
+    public Vector2f getYX() { return new Vector2f(y, x); }
+    public Vector2f getZY() { return new Vector2f(z, y); }
+    public Vector2f getXZ() { return new Vector2f(x, z); }
+
+
     public float getX() {
         return x;
     }
@@ -112,4 +135,26 @@ public class Vector3f
     public void setZ(float z) {
         this.z = z;
     }
+
+    @Override
+    public boolean equals(Object r) {
+        if (this == r) return true;
+        if (r == null || getClass() != r.getClass()) return false;
+
+        Vector3f vector3f = (Vector3f) r;
+
+        if (Float.compare(vector3f.x, x) != 0) return false;
+        if (Float.compare(vector3f.y, y) != 0) return false;
+        return Float.compare(vector3f.z, z) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+        return result;
+    }
+
+
 }

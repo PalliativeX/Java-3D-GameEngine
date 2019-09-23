@@ -19,13 +19,13 @@ public class MeshRenderer extends GameComponent
     }
 
     @Override
-    public void input(Transform transform) {
+    public void input(Transform transform, float delta) {
 
 
     }
 
     @Override
-    public void update(Transform transform)
+    public void update(Transform transform, float delta)
     {
 
     }

@@ -36,6 +36,11 @@ public class Vector2f
         return new Vector2f((float)(x * cos - y * sin),(float)( x * sin + y * cos));
     }
 
+    public Vector2f lerp(Vector2f dest, float lerpFactor)
+    {
+        return dest.subtract(this).multiply(lerpFactor).add(this);
+    }
+
     public Vector2f abs()
     {
         return new Vector2f(Math.abs(x), Math.abs(y));
@@ -94,5 +99,25 @@ public class Vector2f
     public float getY() {
         return y;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Vector2f vector2f = (Vector2f) o;
+
+        if (Float.compare(vector2f.x, x) != 0) return false;
+        return Float.compare(vector2f.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
+        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+        return result;
+    }
+
+
 }
 
