@@ -33,4 +33,5 @@ public class ForwardAmbient extends Shader
         setUniformMat4("MVP", projectedMatrix);
         setUniformVec3("ambientIntensity", getRenderingEngine().getAmbientLight());
     }
+
 }

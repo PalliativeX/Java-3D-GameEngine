@@ -1,12 +1,23 @@
 package com.base.engine.core;
 
 import com.base.engine.core.math.Matrix4f;
+import com.base.engine.core.math.Vector3f;
+import com.base.engine.rendering.Camera;
 import com.base.engine.rendering.Vertex;
+import com.base.engine.rendering.Window;
+import com.base.engine.rendering.light.BaseLight;
+import com.base.engine.rendering.light.DirectionalLight;
+import com.base.engine.rendering.light.ForwardAmbient;
+import com.base.engine.rendering.light.ForwardDirectional;
+import com.base.engine.rendering.shaders.Shader;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 public class Util
 {

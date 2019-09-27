@@ -26,7 +26,7 @@ public class TestGame extends Game
                           2, 1, 3};
 
         Mesh mesh = new Mesh(vertices, indices, true);
-        Material material = new Material(new Texture("background.jpg"), new Vector3f(1, 1, 1), 1, 8);
+        Material material = new Material(new Texture("test.png"), new Vector3f(1, 1, 1), 1, 8);
 
         MeshRenderer meshRenderer = new MeshRenderer(mesh, material);
 

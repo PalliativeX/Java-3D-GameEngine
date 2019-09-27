@@ -34,6 +34,7 @@ public class Window
         Mouse.destroy();
     }
 
+
     public static boolean isCloseRequested()
     {
         return Display.isCloseRequested();

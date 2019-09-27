@@ -2,7 +2,6 @@ package com.base.engine.rendering.shaders;
 
 import com.base.engine.core.RenderingEngine;
 import com.base.engine.core.math.Transform;
-import com.base.engine.rendering.Camera;
 import com.base.engine.rendering.Material;
 import com.base.engine.core.Util;
 import com.base.engine.core.math.Matrix4f;
@@ -175,6 +174,5 @@ public class Shader
     {
         return renderingEngine;
     }
-
 
 }
