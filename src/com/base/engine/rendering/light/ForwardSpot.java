@@ -1,5 +1,8 @@
 package com.base.engine.rendering.light;
 
+import com.base.engine.components.BaseLight;
+import com.base.engine.components.PointLight;
+import com.base.engine.components.SpotLight;
 import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Transform;
 import com.base.engine.rendering.Material;
@@ -37,7 +40,7 @@ public class ForwardSpot extends Shader
         setUniformf("specularPower", material.getSpecularPower());
         setUniformVec3("eyePos", getRenderingEngine().getMainCamera().getPos());
 
-        setUniformSpotLight("spotLight", getRenderingEngine().getSpotLight());
+        setUniformSpotLight("spotLight", (SpotLight)getRenderingEngine().getActiveLight());
     }
 
     private void setUniformBaseLight(String uniformName, BaseLight baseLight)
@@ -48,17 +51,17 @@ public class ForwardSpot extends Shader
 
     public void setUniformPointLight(String uniformName, PointLight pointLight)
     {
-        setUniformBaseLight(uniformName + ".base", pointLight.getBaseLight());
-        setUniformf(uniformName + ".attenuation.constant", pointLight.getAttenuation().getConstant());
-        setUniformf(uniformName + ".attenuation.linear", pointLight.getAttenuation().getLinear());
-        setUniformf(uniformName + ".attenuation.exponent", pointLight.getAttenuation().getExponent());
-        setUniformVec3(uniformName + ".position", pointLight.getPosition());
+        setUniformBaseLight(uniformName + ".base", pointLight);
+        setUniformf(uniformName + ".attenuation.constant", pointLight.getConstant());
+        setUniformf(uniformName + ".attenuation.linear", pointLight.getLinear());
+        setUniformf(uniformName + ".attenuation.exponent", pointLight.getExponent());
+        setUniformVec3(uniformName + ".position", pointLight.getTransform().getPos());
         setUniformf(uniformName + ".range", pointLight.getRange());
     }
 
     public void setUniformSpotLight(String uniformName, SpotLight spotLight)
     {
-        setUniformPointLight(uniformName + ".pointLight", spotLight.getPointLight());
+        setUniformPointLight(uniformName + ".pointLight", spotLight);
         setUniformVec3(uniformName + ".direction", spotLight.getDirection());
         setUniformf(uniformName + ".cutOff", spotLight.getCutOff());
     }

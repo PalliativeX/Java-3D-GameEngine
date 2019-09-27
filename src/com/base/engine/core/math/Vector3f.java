@@ -20,6 +20,11 @@ public class Vector3f
         return x * r.getX() + y * r.getY() + z * r.getZ();
     }
 
+    public float max()
+    {
+        return Math.max(x, Math.max(y, z));
+    }
+
     public Vector3f cross(Vector3f r)
     {
         float x_ = y * r.getZ() - z * r.getY();

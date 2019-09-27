@@ -1,12 +1,11 @@
 package com.base.game;
 
+import com.base.engine.components.*;
 import com.base.engine.core.Game;
 import com.base.engine.core.GameObject;
-import com.base.engine.core.math.Transform;
 import com.base.engine.core.math.Vector2f;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.*;
-import com.base.engine.rendering.shaders.BasicShader;
 
 public class TestGame extends Game
 {
@@ -32,10 +31,24 @@ public class TestGame extends Game
 
         GameObject planeObject = new GameObject();
         planeObject.addComponent(meshRenderer);
-        planeObject.getTransform().setTranslation(0.f, -1.f, 5.f);
+        planeObject.getTransform().setPos(0.f, -1.f, 5.f);
+
+        GameObject directionalLightObj = new GameObject();
+        DirectionalLight dirLight = new DirectionalLight(new Vector3f(0, 0, 1), 0.4f, new Vector3f(1, 1, 1));
+        directionalLightObj.addComponent(dirLight);
+
+        GameObject pointLightObj = new GameObject();
+        PointLight pointLight = new PointLight(new Vector3f(0, 1, 0), 0.4f, new Vector3f(0, 0, 1));
+        pointLightObj.addComponent(pointLight);
+
+        GameObject spotLightObj = new GameObject();
+        SpotLight spotLight = new SpotLight(new Vector3f(1, 1, 1), 0.9f, new Vector3f(0.01f, 0, 0.02f), new Vector3f(1, 0, 0), 0.3f);
+        spotLightObj.addComponent(spotLight);
 
         getRootObject().addChild(planeObject);
-
+        getRootObject().addChild(directionalLightObj);
+        getRootObject().addChild(pointLightObj);
+        getRootObject().addChild(spotLightObj);
     }
 
 }

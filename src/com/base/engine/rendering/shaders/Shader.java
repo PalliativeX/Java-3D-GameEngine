@@ -1,6 +1,6 @@
 package com.base.engine.rendering.shaders;
 
-import com.base.engine.core.RenderingEngine;
+import com.base.engine.rendering.RenderingEngine;
 import com.base.engine.core.math.Transform;
 import com.base.engine.rendering.Material;
 import com.base.engine.core.Util;

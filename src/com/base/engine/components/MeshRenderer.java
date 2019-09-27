@@ -1,10 +1,9 @@
-package com.base.game;
+package com.base.engine.components;
 
-import com.base.engine.core.GameComponent;
+import com.base.engine.components.GameComponent;
 import com.base.engine.core.math.Transform;
 import com.base.engine.rendering.Material;
 import com.base.engine.rendering.Mesh;
-import com.base.engine.rendering.shaders.BasicShader;
 import com.base.engine.rendering.shaders.Shader;
 
 public class MeshRenderer extends GameComponent
@@ -19,22 +18,10 @@ public class MeshRenderer extends GameComponent
     }
 
     @Override
-    public void input(Transform transform, float delta) {
-
-
-    }
-
-    @Override
-    public void update(Transform transform, float delta)
-    {
-
-    }
-
-    @Override
-    public void render(Transform transform, Shader shader)
+    public void render(Shader shader)
     {
         shader.bind();
-        shader.updateUniforms(transform, material);
+        shader.updateUniforms(getTransform(), material);
         mesh.draw();
     }
 }

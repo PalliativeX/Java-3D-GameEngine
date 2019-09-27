@@ -20,6 +20,11 @@ public class Vector2f
         return this.x * vec.getX() + this.y * vec.getY();
     }
 
+    public float max()
+    {
+        return Math.max(x, y);
+    }
+
     public Vector2f normalized()
     {
         float length = length();
