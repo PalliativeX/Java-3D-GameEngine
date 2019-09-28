@@ -6,13 +6,11 @@ import com.base.engine.rendering.light.ForwardSpot;
 
 public class SpotLight extends PointLight
 {
-    private Vector3f direction;
     private float cutOff;
 
-    public SpotLight(Vector3f color, float intensity, Vector3f attenuation, Vector3f direction, float cutOff)
+    public SpotLight(Vector3f color, float intensity, Vector3f attenuation, float cutOff)
     {
         super(color, intensity, attenuation);
-        this.direction = direction.normalized();
         this.cutOff = cutOff;
 
         setShader(ForwardSpot.getInstance());
@@ -20,11 +18,7 @@ public class SpotLight extends PointLight
 
 
     public Vector3f getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Vector3f direction) {
-        this.direction = direction.normalized();
+        return getTransform().getRotation().getForward();
     }
 
     public float getCutOff() {

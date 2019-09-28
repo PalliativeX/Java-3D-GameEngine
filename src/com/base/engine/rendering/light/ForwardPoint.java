@@ -54,7 +54,7 @@ public class ForwardPoint extends Shader
         setUniformf(uniformName + ".attenuation.constant", pointLight.getConstant());
         setUniformf(uniformName + ".attenuation.linear", pointLight.getLinear());
         setUniformf(uniformName + ".attenuation.exponent", pointLight.getExponent());
-        setUniformVec3(uniformName + ".position", pointLight.getTransform().getPos());
+        setUniformVec3(uniformName + ".position", pointLight.getTransform().getPosition());
         setUniformf(uniformName + ".range", pointLight.getRange());
     }
 
