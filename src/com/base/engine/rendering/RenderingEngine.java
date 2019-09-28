@@ -1,9 +1,9 @@
 package com.base.engine.rendering;
 
 import com.base.engine.components.BaseLight;
+import com.base.engine.components.Camera;
 import com.base.engine.core.GameObject;
 import com.base.engine.core.math.Vector3f;
-import com.base.engine.rendering.*;
 import com.base.engine.rendering.light.*;
 import com.base.engine.rendering.shaders.Shader;
 
@@ -34,46 +34,13 @@ public class RenderingEngine
         glEnable(GL_DEPTH_CLAMP);
         glEnable(GL_TEXTURE_2D);
 
-        mainCamera = new Camera((float)Math.toRadians(70.f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 500.f);
 
         ambientLight = new Vector3f(0.1f, 0.1f, 0.1f);
-        /*
-
-        // setting point lights
-        int lightFieldWidth = 5;
-        int lightFieldDepth = 5;
-
-        float lightFieldStartX = 0;
-        float lightFieldStartY = 0;
-        float lightFieldStepX = 7;
-        float lightFieldStepY = 7;
-
-        pointLights = new PointLight[lightFieldWidth * lightFieldDepth];
-
-        for (int i = 0; i < lightFieldWidth; i++) {
-            for (int j = 0; j < lightFieldDepth; j++) {
-                pointLights[i * lightFieldDepth + j] = new PointLight(new BaseLight(new Vector3f(0, 1, 0), 0.4f),
-                        new Attenuation(0, 0, 1),
-                        new Vector3f(lightFieldStartX + lightFieldStepX * i, 0, lightFieldStartY + lightFieldStepY * j), 100);
-            }
-        }
-
-        activePointLight = pointLights[0];
-
-        // creating a spotlight
-        spotLight = new SpotLight(new PointLight(new BaseLight(new Vector3f(1, 1, 1), 0.9f),
-                new Attenuation(0.01f, 0, 0.02f),
-                new Vector3f(5, 0, 5), 100), new Vector3f(1, 0, 0), 0.3f);*/
     }
 
     public Vector3f getAmbientLight()
     {
         return ambientLight;
-    }
-
-    public void input(float delta)
-    {
-        mainCamera.input(delta);
     }
 
     public void render(GameObject object)
@@ -146,6 +113,11 @@ public class RenderingEngine
     public void addLight(BaseLight light)
     {
         lights.add(light);
+    }
+
+    public void addCamera(Camera camera)
+    {
+        mainCamera = camera;
     }
 
     public BaseLight getActiveLight()

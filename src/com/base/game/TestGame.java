@@ -51,6 +51,8 @@ public class TestGame extends Game
         getRootObject().addChild(directionalLightObj);
         getRootObject().addChild(pointLightObj);
         getRootObject().addChild(spotLightObj);
+
+        getRootObject().addChild(new GameObject().addComponent(new Camera((float)Math.toRadians(70.f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 500.f)));
     }
 
 }
