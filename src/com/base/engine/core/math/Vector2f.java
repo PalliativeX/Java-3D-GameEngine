@@ -10,6 +10,12 @@ public class Vector2f
         this.y = y;
     }
 
+    public Vector2f(Vector2f r)
+    {
+        this.x = r.x;
+        this.y = r.y;
+    }
+
     public float length()
     {
         return (float)Math.sqrt(x * x + y * y);
@@ -40,6 +46,9 @@ public class Vector2f
 
         return new Vector2f((float)(x * cos - y * sin),(float)( x * sin + y * cos));
     }
+
+    public Vector2f set(Vector2f r) { this.x = r.x; this.y = r.y; return this; }
+
 
     public Vector2f lerp(Vector2f dest, float lerpFactor)
     {

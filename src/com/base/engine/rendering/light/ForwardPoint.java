@@ -37,7 +37,7 @@ public class ForwardPoint extends Shader
 
         setUniformf("specularIntensity", material.getSpecularIntensity());
         setUniformf("specularPower", material.getSpecularPower());
-        setUniformVec3("eyePos", getRenderingEngine().getMainCamera().getTransform().getPosition());
+        setUniformVec3("eyePos", getRenderingEngine().getMainCamera().getTransform().getTransformedPosition());
 
         setUniformPointLight("pointLight", (PointLight)getRenderingEngine().getActiveLight());
     }

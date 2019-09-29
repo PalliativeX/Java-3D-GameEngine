@@ -10,6 +10,13 @@ public class Vector3f
         this.z = z;
     }
 
+    public Vector3f(Vector3f r)
+    {
+        this.x = r.x;
+        this.y = r.y;
+        this.z = r.z;
+    }
+
     public float length()
     {
         return (float)Math.sqrt(x * x + y * y + z * z);
@@ -118,6 +125,12 @@ public class Vector3f
     public Vector2f getXZ() { return new Vector2f(x, z); }
 
     public void set(float x, float y, float z) { this.x = x; this.y = y; this.z = z; }
+
+    public Vector3f set(Vector3f r)
+    {
+        set(r.getX(), r.getY(), r.getZ());
+        return this;
+    }
 
     public float getX() {
         return x;
