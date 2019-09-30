@@ -35,7 +35,10 @@ public class TestGame extends Game
         Mesh mesh2 = new Mesh(vertices2, indices2, true);
 
         Mesh mesh = new Mesh(vertices, indices, true);
-        Material material = new Material(new Texture("test.png"), new Vector3f(1,1,1), 1, 8);
+        Material material = new Material();
+        material.addTexture("diffuse", new Texture("test.png"));
+        material.addFloat("specularIntensity", 0.6f);
+        material.addFloat("specularPower", 4);
 
         MeshRenderer meshRenderer = new MeshRenderer(mesh, material);
 
@@ -60,10 +63,10 @@ public class TestGame extends Game
         spotLightObject.getTransform().getPosition().set(5, 0, 5);
         spotLightObject.getTransform().setRotation(new Quaternion(new Vector3f(0,1,0), (float)Math.toRadians(90.0f)));
 
-        getRootObject().addChild(planeObject);
-        getRootObject().addChild(directionalLightObject);
-        getRootObject().addChild(pointLightObject);
-        getRootObject().addChild(spotLightObject);
+        addObject(planeObject);
+        addObject(directionalLightObject);
+        addObject(pointLightObject);
+        addObject(spotLightObject);
 
         //getRootObject().addChild(new GameObject().addComponent(new Camera((float)Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000.0f)));
 
@@ -74,13 +77,21 @@ public class TestGame extends Game
         testMesh1.getTransform().setRotation(new Quaternion(new Vector3f(0,1,0), 0.4f));
 
         testMesh2.getTransform().getPosition().set(0, 0, 5);
+        testMesh2.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(90)));
+
 
         testMesh1.addChild(testMesh2);
-        testMesh2
-                //getRootObject()
-                .addChild(new GameObject().addComponent(new Camera((float)Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000.0f)));
 
-        getRootObject().addChild(testMesh1);
+        addObject(testMesh1);
+
+        GameObject camera = new GameObject().addComponent(new Camera((float)Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000.0f));
+
+        SpotLight cameraFlashLight = new SpotLight(new Vector3f(1,1,1), 0.9f,
+                new Vector3f(0,0,0.2f), 0.8f);
+        camera.addComponent(cameraFlashLight);
+
+        addObject(camera);
+
 
         directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1,0,0), (float)Math.toRadians(-45)));
     }

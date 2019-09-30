@@ -5,6 +5,7 @@ import com.base.engine.components.DirectionalLight;
 import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Transform;
 import com.base.engine.rendering.Material;
+import com.base.engine.rendering.RenderingEngine;
 import com.base.engine.rendering.shaders.Shader;
 
 public class ForwardDirectional extends Shader
@@ -25,21 +26,21 @@ public class ForwardDirectional extends Shader
         compileShader();
     }
 
-    public void updateUniforms(Transform transform, Material material)
+    public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)
     {
         Matrix4f worldMatrix = transform.getTransformation();
-        Matrix4f projectedMatrix = getRenderingEngine().getMainCamera().getViewProjection().multiply(worldMatrix);
+        Matrix4f projectedMatrix = renderingEngine.getMainCamera().getViewProjection().multiply(worldMatrix);
 
-        material.getTexture().bind();
+        material.getTexture("diffuse").bind();
 
         setUniformMat4("model", worldMatrix);
         setUniformMat4("MVP", projectedMatrix);
 
-        setUniformf("specularIntensity", material.getSpecularIntensity());
-        setUniformf("specularPower", material.getSpecularPower());
-        setUniformVec3("eyePos", getRenderingEngine().getMainCamera().getTransform().getTransformedPosition());
+        setUniformf("specularIntensity", material.getFloat("specularIntensity"));
+        setUniformf("specularPower", material.getFloat("specularPower"));
+        setUniformVec3("eyePos", renderingEngine.getMainCamera().getTransform().getTransformedPosition());
 
-        setUniformDirLight("directionalLight", (DirectionalLight)getRenderingEngine().getActiveLight());
+        setUniformDirLight("directionalLight", (DirectionalLight)renderingEngine.getActiveLight());
     }
 
     private void setUniformBaseLight(String uniformName, BaseLight baseLight)

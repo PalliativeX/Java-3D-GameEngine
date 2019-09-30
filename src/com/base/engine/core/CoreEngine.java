@@ -92,7 +92,7 @@ public class CoreEngine
 
             // rendering if the context was updated
             if (render) {
-                renderingEngine.render(game.getRootObject());
+                game.render(renderingEngine);
                 Window.render();
                 frames++;
             }
