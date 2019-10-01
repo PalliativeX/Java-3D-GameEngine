@@ -2,7 +2,7 @@ package com.base.engine.components;
 
 import com.base.engine.rendering.RenderingEngine;
 import com.base.engine.core.math.Vector3f;
-import com.base.engine.rendering.shaders.Shader;
+import com.base.engine.rendering.Shader;
 
 public class BaseLight extends GameComponent
 {

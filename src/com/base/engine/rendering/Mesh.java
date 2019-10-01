@@ -2,6 +2,7 @@ package com.base.engine.rendering;
 
 import com.base.engine.core.Util;
 import com.base.engine.core.math.Vector3f;
+import com.base.engine.rendering.meshLoading.OBJModel;
 import org.lwjgl.opengl.GL15;
 
 import java.io.BufferedReader;
@@ -105,6 +106,8 @@ public class Mesh
         String[] splitArray = fileName.split("\\.");
         String ext = splitArray[splitArray.length - 1];
 
+        OBJModel test = new OBJModel("./resources/models/" + fileName);
+
         if (!ext.equals("obj")) {
             System.err.println("Error: File format not supported for mesh data: " + ext);
             new Exception().printStackTrace();
@@ -116,7 +119,7 @@ public class Mesh
 
         BufferedReader meshReader = null;
         try {
-            meshReader = new BufferedReader(new FileReader("./res/models/" + fileName));
+            meshReader = new BufferedReader(new FileReader("./resources/models/" + fileName));
             String line;
 
             while ((line = meshReader.readLine()) != null) {

@@ -1,4 +1,4 @@
-package com.base.engine.rendering.shaders;
+package com.base.engine.rendering;
 
 import com.base.engine.rendering.RenderingEngine;
 import com.base.engine.core.math.Transform;

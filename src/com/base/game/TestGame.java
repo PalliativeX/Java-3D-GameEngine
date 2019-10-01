@@ -40,6 +40,8 @@ public class TestGame extends Game
         material.addFloat("specularIntensity", 0.6f);
         material.addFloat("specularPower", 4);
 
+        Mesh tempMesh = new Mesh("sphere.obj");
+
         MeshRenderer meshRenderer = new MeshRenderer(mesh, material);
 
         GameObject planeObject = new GameObject();

@@ -4,7 +4,7 @@ import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Transform;
 import com.base.engine.rendering.Material;
 import com.base.engine.rendering.RenderingEngine;
-import com.base.engine.rendering.shaders.Shader;
+import com.base.engine.rendering.Shader;
 
 public class ForwardAmbient extends Shader
 {

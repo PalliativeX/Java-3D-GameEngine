@@ -5,7 +5,6 @@ import com.base.engine.components.Camera;
 import com.base.engine.core.GameObject;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.light.*;
-import com.base.engine.rendering.shaders.Shader;
 
 import java.util.ArrayList;
 
