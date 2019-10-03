@@ -37,7 +37,6 @@ public class Mesh
             loadMesh(fileName);
             loadedModels.put(fileName, new WeakReference<>(resource));
         }
-
     }
 
     public Mesh(Vertex[] vertices, int[] indices)

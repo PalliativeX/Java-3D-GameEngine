@@ -4,6 +4,7 @@ import com.base.engine.core.math.Matrix4f;
 import com.base.engine.rendering.Vertex;
 import org.lwjgl.BufferUtils;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -18,6 +19,11 @@ public class Util
     public static IntBuffer createIntBuffer(int size)
     {
         return BufferUtils.createIntBuffer(size);
+    }
+
+    public static ByteBuffer createByteBuffer(int size)
+    {
+        return BufferUtils.createByteBuffer(size);
     }
 
     public static IntBuffer createFlippedBuffer(int... values)

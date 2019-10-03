@@ -50,16 +50,21 @@ public class TestGame extends Game
         material3.addFloat("specularIntensity", 0.5f);
         material3.addFloat("specularPower", 32);
 
+        Material material4 = new Material();
+        material4.addTexture("diffuse", new Texture("mosaic.jpg"));
+        material4.addFloat("specularIntensity", 0.5f);
+        material4.addFloat("specularPower", 32);
+
         Mesh tempMesh = new Mesh("sphere.obj");
 
-        MeshRenderer meshRenderer = new MeshRenderer(mesh, material);
+        MeshRenderer meshRenderer = new MeshRenderer(mesh, material4);
 
         GameObject planeObject = new GameObject();
         planeObject.addComponent(meshRenderer);
         planeObject.getTransform().getPosition().set(0, -1, 5);
 
         GameObject directionalLightObject = new GameObject();
-        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(0,0,1), 0.4f);
+        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(1f,1f,1f), 0.2f);
 
         directionalLightObject.addComponent(directionalLight);
 
