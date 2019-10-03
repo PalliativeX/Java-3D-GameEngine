@@ -22,7 +22,7 @@ public class TestGame extends Game
                 new Vertex( new Vector3f(fieldWidth * 3, 0.0f, fieldDepth * 3), new Vector2f(1.0f, 1.0f))};
 
         int indices[] = { 0, 1, 2,
-                2, 1, 3};
+                          2, 1, 3};
 
         Vertex[] vertices2 = new Vertex[] { 	new Vertex( new Vector3f(-fieldWidth/ 10, 0.0f, -fieldDepth/ 10), new Vector2f(0.0f, 0.0f)),
                 new Vertex( new Vector3f(-fieldWidth/ 10, 0.0f, fieldDepth/ 10 * 3), new Vector2f(0.0f, 1.0f)),
@@ -30,7 +30,7 @@ public class TestGame extends Game
                 new Vertex( new Vector3f(fieldWidth/ 10 * 3, 0.0f, fieldDepth/ 10 * 3), new Vector2f(1.0f, 1.0f))};
 
         int indices2[] = { 0, 1, 2,
-                2, 1, 3};
+                           2, 1, 3};
 
         Mesh mesh2 = new Mesh(vertices2, indices2, true);
 
@@ -56,6 +56,10 @@ public class TestGame extends Game
         GameObject pointLightObject = new GameObject();
         pointLightObject.addComponent(new PointLight(new Vector3f(0,1,0), 0.4f, new Vector3f(0,0,1)));
 
+        GameObject pointLightObject2 = new GameObject();
+        pointLightObject2.addComponent(new PointLight(new Vector3f(0.8f,0.5f,0.5f), 0.6f, new Vector3f(0,0,0.6f)));
+        pointLightObject2.getTransform().setPosition(new Vector3f(6, 6 , 6));
+
         SpotLight spotLight = new SpotLight(new Vector3f(0,1,1), 0.4f,
                 new Vector3f(0,0,0.1f), 0.7f);
 
@@ -68,12 +72,14 @@ public class TestGame extends Game
         addObject(planeObject);
         addObject(directionalLightObject);
         addObject(pointLightObject);
+        addObject(pointLightObject2);
         addObject(spotLightObject);
 
-        //getRootObject().addChild(new GameObject().addComponent(new Camera((float)Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000.0f)));
 
         GameObject testMesh1 = new GameObject().addComponent(new MeshRenderer(mesh2, material));
         GameObject testMesh2 = new GameObject().addComponent(new MeshRenderer(mesh2, material));
+        GameObject testMesh3 = new GameObject().addComponent(new MeshRenderer(tempMesh, material));
+
 
         testMesh1.getTransform().getPosition().set(0, 2, 0);
         testMesh1.getTransform().setRotation(new Quaternion(new Vector3f(0,1,0), 0.4f));
@@ -85,6 +91,7 @@ public class TestGame extends Game
         testMesh1.addChild(testMesh2);
 
         addObject(testMesh1);
+        addObject(testMesh3);
 
         GameObject camera = new GameObject().addComponent(new Camera((float)Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000.0f));
 
@@ -93,6 +100,8 @@ public class TestGame extends Game
         camera.addComponent(cameraFlashLight);
 
         addObject(camera);
+
+        testMesh3.getTransform().getPosition().set(5 ,5, 5);
 
 
         directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1,0,0), (float)Math.toRadians(-45)));

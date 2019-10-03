@@ -2,6 +2,7 @@ package com.base.engine.rendering.meshLoading;
 
 import com.base.engine.core.math.Vector2f;
 import com.base.engine.core.math.Vector3f;
+import com.base.engine.rendering.Vertex;
 
 import java.util.ArrayList;
 
@@ -14,10 +15,32 @@ public class IndexedModel
 
     public IndexedModel()
     {
-        this.positions = new ArrayList<>();
-        this.texCoords = new ArrayList<>();
-        this.normals   = new ArrayList<>();
-        this.indices   = new ArrayList<>();
+        positions = new ArrayList<>();
+        texCoords = new ArrayList<>();
+        normals   = new ArrayList<>();
+        indices   = new ArrayList<>();
+    }
+
+    public void calcNormals()
+    {
+        for(int i = 0; i < indices.size(); i += 3)
+        {
+            int i0 = indices.get(i);
+            int i1 = indices.get(i + 1);
+            int i2 = indices.get(i + 2);
+
+            Vector3f v1 = positions.get(i1).subtract(positions.get(i0));
+            Vector3f v2 = positions.get(i2).subtract(positions.get(i0));
+
+            Vector3f normal = v1.cross(v2).normalized();
+
+            normals.get(i0).set(normals.get(i0).add(normal));
+            normals.get(i1).set(normals.get(i1).add(normal));
+            normals.get(i2).set(normals.get(i2).add(normal));
+        }
+
+        for(int i = 0; i < normals.size(); i++)
+            normals.get(i).set(normals.get(i).normalized());
     }
 
     public ArrayList<Vector3f> getPositions() { return positions; }
