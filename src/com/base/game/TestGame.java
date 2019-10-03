@@ -37,23 +37,23 @@ public class TestGame extends Game
         Mesh mesh = new Mesh(vertices, indices, true);
         Material material = new Material();
         material.addTexture("diffuse", new Texture("test.png"));
-        material.addFloat("specularIntensity", 0.6f);
-        material.addFloat("specularPower", 4);
+        material.addFloat("specularIntensity", 0.7f);
+        material.addFloat("specularPower", 8);
 
         Material material2 = new Material();
         material2.addTexture("diffuse", new Texture("brick_wall.jpg"));
-        material2.addFloat("specularIntensity", 0.6f);
-        material2.addFloat("specularPower", 8);
+        material2.addFloat("specularIntensity", 1);
+        material2.addFloat("specularPower", 16);
 
         Material material3 = new Material();
         material3.addTexture("diffuse", new Texture("snow.jpg"));
-        material3.addFloat("specularIntensity", 0.5f);
-        material3.addFloat("specularPower", 32);
+        material3.addFloat("specularIntensity", 1);
+        material3.addFloat("specularPower", 64);
 
         Material material4 = new Material();
         material4.addTexture("diffuse", new Texture("mosaic.jpg"));
-        material4.addFloat("specularIntensity", 0.5f);
-        material4.addFloat("specularPower", 32);
+        material4.addFloat("specularIntensity", 0.8f);
+        material4.addFloat("specularPower", 16);
 
         Mesh tempMesh = new Mesh("sphere.obj");
 

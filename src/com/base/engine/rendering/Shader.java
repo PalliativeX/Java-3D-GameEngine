@@ -144,13 +144,18 @@ public class Shader
     {
         StringBuilder shaderSource = new StringBuilder();
         BufferedReader shaderReader = null;
+        final String INCLUDE_DIRECTIVE = "#include";
 
         try {
             shaderReader = new BufferedReader(new FileReader("./resources/shaders/" + fileName));
             String line;
 
             while((line = shaderReader.readLine()) != null) {
-                shaderSource.append(line).append("\n");
+                if (line.startsWith(INCLUDE_DIRECTIVE)) {
+                    shaderSource.append(loadShader(line.substring(INCLUDE_DIRECTIVE.length() + 2, line.length() - 1)));
+                }
+                else
+                    shaderSource.append(line).append("\n");
             }
 
             shaderReader.close();
