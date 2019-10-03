@@ -7,7 +7,8 @@ public class OBJIndex
     public int normalIndex;
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -19,7 +20,8 @@ public class OBJIndex
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int result = vertexIndex;
         result = 31 * result + texCoordIndex;
         result = 31 * result + normalIndex;

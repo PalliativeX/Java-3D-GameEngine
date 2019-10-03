@@ -6,9 +6,9 @@ import java.util.HashMap;
 
 public class Material
 {
-    private HashMap<String, Texture> textureHashMap;
+    private HashMap<String, Texture>  textureHashMap;
     private HashMap<String, Vector3f> vector3fHashMap;
-    private HashMap<String, Float> floatHashMap;
+    private HashMap<String, Float>    floatHashMap;
 
     public Material()
     {

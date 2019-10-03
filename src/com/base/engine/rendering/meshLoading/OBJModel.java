@@ -29,39 +29,32 @@ public class OBJModel
 
         BufferedReader meshReader = null;
 
-        try
-        {
+        try {
             meshReader = new BufferedReader(new FileReader(fileName));
             String line;
 
-            while((line = meshReader.readLine()) != null)
-            {
+            while ((line = meshReader.readLine()) != null) {
                 String[] tokens = line.split(" ");
                 tokens = Util.removeEmptyString(tokens);
 
-                if(tokens.length == 0 || tokens[0].equals("#"))
+                if (tokens.length == 0 || tokens[0].equals("#"))
                     continue;
-                else if(tokens[0].equals("v"))
-                {
+                else if (tokens[0].equals("v")) {
                     positions.add(new Vector3f(Float.valueOf(tokens[1]),
                             Float.valueOf(tokens[2]),
                             Float.valueOf(tokens[3])));
                 }
-                else if(tokens[0].equals("vt"))
-                {
+                else if (tokens[0].equals("vt")) {
                     texCoords.add(new Vector2f(Float.valueOf(tokens[1]),
                             Float.valueOf(tokens[2])));
                 }
-                else if(tokens[0].equals("vn"))
-                {
+                else if (tokens[0].equals("vn")) {
                     normals.add(new Vector3f(Float.valueOf(tokens[1]),
                             Float.valueOf(tokens[2]),
                             Float.valueOf(tokens[3])));
                 }
-                else if(tokens[0].equals("f"))
-                {
-                    for(int i = 0; i < tokens.length - 3; i++)
-                    {
+                else if (tokens[0].equals("f")) {
+                    for (int i = 0; i < tokens.length - 3; i++) {
                         indices.add(parseOBJIndex(tokens[1]));
                         indices.add(parseOBJIndex(tokens[2 + i]));
                         indices.add(parseOBJIndex(tokens[3 + i]));
@@ -70,9 +63,7 @@ public class OBJModel
             }
 
             meshReader.close();
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
@@ -83,8 +74,8 @@ public class OBJModel
         IndexedModel result = new IndexedModel();
         IndexedModel normalModel = new IndexedModel();
         HashMap<OBJIndex, Integer> resultIndexMap = new HashMap<>();
-        HashMap<Integer, Integer>  normalIndexMap = new HashMap<>();
-        HashMap<Integer, Integer>  indexMap = new HashMap<>();
+        HashMap<Integer, Integer> normalIndexMap = new HashMap<>();
+        HashMap<Integer, Integer> indexMap = new HashMap<>();
 
         for (int i = 0; i < indices.size(); i++) {
             OBJIndex currentIndex = indices.get(i);
@@ -147,12 +138,12 @@ public class OBJModel
         OBJIndex result = new OBJIndex();
         result.vertexIndex = Integer.parseInt(values[0]) - 1;
 
-        if(values.length > 1) {
-            if(!values[1].isEmpty()) {
+        if (values.length > 1) {
+            if (!values[1].isEmpty()) {
                 hasTexCoords = true;
-                result.texCoordIndex = Integer.parseInt(values[1])-1;
+                result.texCoordIndex = Integer.parseInt(values[1]) - 1;
             }
-            if(values.length > 2) {
+            if (values.length > 2) {
                 hasNormals = true;
                 result.normalIndex = Integer.parseInt(values[2]) - 1;
             }
@@ -160,9 +151,24 @@ public class OBJModel
         return result;
     }
 
-    public ArrayList<Vector3f> getPositions() { return positions; }
-    public ArrayList<Vector2f> getTexCoords() { return texCoords; }
-    public ArrayList<Vector3f> getNormals()   { return normals; }
-    public ArrayList<OBJIndex> getIndices()    { return indices; }
+    public ArrayList<Vector3f> getPositions()
+    {
+        return positions;
+    }
+
+    public ArrayList<Vector2f> getTexCoords()
+    {
+        return texCoords;
+    }
+
+    public ArrayList<Vector3f> getNormals()
+    {
+        return normals;
+    }
+
+    public ArrayList<OBJIndex> getIndices()
+    {
+        return indices;
+    }
 
 }

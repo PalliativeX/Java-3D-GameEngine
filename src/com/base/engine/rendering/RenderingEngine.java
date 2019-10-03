@@ -49,7 +49,7 @@ public class RenderingEngine
         lights.clear();
         object.addToRenderingEngine(this);
 
-        Shader forwardAmbient  = ForwardAmbient.getInstance();
+        Shader forwardAmbient = ForwardAmbient.getInstance();
         object.render(forwardAmbient, this);
 
         // blending all colors from multiple shader passes

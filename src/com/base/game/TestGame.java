@@ -40,6 +40,16 @@ public class TestGame extends Game
         material.addFloat("specularIntensity", 0.6f);
         material.addFloat("specularPower", 4);
 
+        Material material2 = new Material();
+        material2.addTexture("diffuse", new Texture("brick_wall.jpg"));
+        material2.addFloat("specularIntensity", 0.6f);
+        material2.addFloat("specularPower", 8);
+
+        Material material3 = new Material();
+        material3.addTexture("diffuse", new Texture("snow.jpg"));
+        material3.addFloat("specularIntensity", 0.5f);
+        material3.addFloat("specularPower", 32);
+
         Mesh tempMesh = new Mesh("sphere.obj");
 
         MeshRenderer meshRenderer = new MeshRenderer(mesh, material);
@@ -77,8 +87,8 @@ public class TestGame extends Game
 
 
         GameObject testMesh1 = new GameObject().addComponent(new MeshRenderer(mesh2, material));
-        GameObject testMesh2 = new GameObject().addComponent(new MeshRenderer(mesh2, material));
-        GameObject testMesh3 = new GameObject().addComponent(new MeshRenderer(tempMesh, material));
+        GameObject testMesh2 = new GameObject().addComponent(new MeshRenderer(mesh2, material2));
+        GameObject testMesh3 = new GameObject().addComponent(new MeshRenderer(tempMesh, material3));
 
 
         testMesh1.getTransform().getPosition().set(0, 2, 0);
@@ -102,6 +112,8 @@ public class TestGame extends Game
         addObject(camera);
 
         testMesh3.getTransform().getPosition().set(5 ,5, 5);
+
+        addObject(new GameObject().addComponent(new MeshRenderer(new Mesh("sphere.obj"), material3)));
 
 
         directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1,0,0), (float)Math.toRadians(-45)));

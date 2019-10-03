@@ -40,8 +40,7 @@ public class Texture
         try {
             int id = TextureLoader.getTexture(ext, new FileInputStream(new File("./resources/textures/" + fileName))).getTextureID();
             return id;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
