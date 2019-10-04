@@ -1,10 +1,7 @@
 package com.base.engine.rendering.light;
 
-import com.base.engine.core.math.Matrix4f;
-import com.base.engine.core.math.Transform;
-import com.base.engine.rendering.Material;
-import com.base.engine.rendering.RenderingEngine;
-import com.base.engine.rendering.Shader;
+import com.base.engine.core.math.*;
+import com.base.engine.rendering.*;
 
 public class ForwardAmbient extends Shader
 {
@@ -17,11 +14,7 @@ public class ForwardAmbient extends Shader
 
     private ForwardAmbient()
     {
-        super();
-
-        addVertexShaderFromFile("forward-ambient.vert");
-        addFragmentShaderFromFile("forward-ambient.frag");
-        compileShader();
+        super("forward-ambient");
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)

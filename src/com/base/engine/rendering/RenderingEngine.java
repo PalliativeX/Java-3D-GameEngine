@@ -1,7 +1,6 @@
 package com.base.engine.rendering;
 
-import com.base.engine.components.BaseLight;
-import com.base.engine.components.Camera;
+import com.base.engine.components.*;
 import com.base.engine.core.GameObject;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.light.*;
@@ -44,13 +43,13 @@ public class RenderingEngine
 
     public void render(GameObject object)
     {
-        clearScreen();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        lights.clear();
-        object.addToRenderingEngine(this);
+        //lights.clear();
+        //object.addToEngine(this);
 
         Shader forwardAmbient = ForwardAmbient.getInstance();
-        object.render(forwardAmbient, this);
+        object.renderAll(forwardAmbient, this);
 
         // blending all colors from multiple shader passes
         glEnable(GL_BLEND);
@@ -60,36 +59,12 @@ public class RenderingEngine
 
         for (BaseLight light : lights) {
             activeLight = light;
-            object.render(light.getShader(), this);
+            object.renderAll(light.getShader(), this);
         }
 
         glDepthFunc(GL_LESS);
         glDepthMask(true);
         glDisable(GL_BLEND);
-    }
-
-    private static void clearScreen()
-    {
-        // @TODO: stencil buffer
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
-    private static void setTextures(boolean enabled)
-    {
-        if (enabled)
-            glEnable(GL_TEXTURE_2D);
-        else
-            glDisable(GL_TEXTURE_2D);
-    }
-
-    private static void unbindTextures()
-    {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    private static void setClearColor(Vector3f color)
-    {
-        glClearColor(color.getX(), color.getY(), color.getZ(), 1.f);
     }
 
     public static String getOpenGLVersion()

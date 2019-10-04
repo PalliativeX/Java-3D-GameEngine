@@ -7,9 +7,9 @@ public class TextureResource
 {
     private int id;
 
-    public TextureResource(int id)
+    public TextureResource()
     {
-        this.id = id;
+        this.id = glGenBuffers();
     }
 
     @Override

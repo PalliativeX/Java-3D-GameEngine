@@ -1,13 +1,8 @@
 package com.base.engine.rendering.light;
 
-import com.base.engine.components.BaseLight;
-import com.base.engine.components.PointLight;
-import com.base.engine.components.SpotLight;
-import com.base.engine.core.math.Matrix4f;
-import com.base.engine.core.math.Transform;
-import com.base.engine.rendering.Material;
-import com.base.engine.rendering.RenderingEngine;
-import com.base.engine.rendering.Shader;
+import com.base.engine.components.*;
+import com.base.engine.core.math.*;
+import com.base.engine.rendering.*;
 
 public class ForwardSpot extends Shader
 {
@@ -20,11 +15,7 @@ public class ForwardSpot extends Shader
 
     private ForwardSpot()
     {
-        super();
-
-        addVertexShaderFromFile("forward-spot.vert");
-        addFragmentShaderFromFile("forward-spot.frag");
-        compileShader();
+        super("forward-spot");
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)
@@ -53,9 +44,9 @@ public class ForwardSpot extends Shader
     public void setUniformPointLight(String uniformName, PointLight pointLight)
     {
         setUniformBaseLight(uniformName + ".base", pointLight);
-        setUniformf(uniformName + ".attenuation.constant", pointLight.getConstant());
-        setUniformf(uniformName + ".attenuation.linear", pointLight.getLinear());
-        setUniformf(uniformName + ".attenuation.exponent", pointLight.getExponent());
+        setUniformf(uniformName + ".attenuation.constant", pointLight.getAttenuation().getConstant());
+        setUniformf(uniformName + ".attenuation.linear", pointLight.getAttenuation().getLinear());
+        setUniformf(uniformName + ".attenuation.exponent", pointLight.getAttenuation().getExponent());
         setUniformVec3(uniformName + ".position", pointLight.getTransform().getPosition());
         setUniformf(uniformName + ".range", pointLight.getRange());
     }

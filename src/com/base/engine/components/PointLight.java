@@ -1,24 +1,25 @@
 package com.base.engine.components;
 
 import com.base.engine.core.math.Vector3f;
+import com.base.engine.rendering.light.Attenuation;
 import com.base.engine.rendering.light.ForwardPoint;
 
 public class PointLight extends BaseLight
 {
     private static final int COLOR_DEPTH = 256;
 
-    private Vector3f attenuation;
+    private Attenuation attenuation;
     private float range;
 
-    public PointLight(Vector3f color, float intensity, Vector3f attenuation)
+    public PointLight(Vector3f color, float intensity, Attenuation attenuation)
     {
         super(color, intensity);
         this.attenuation = attenuation;
 
         // calculating the possible range
-        float a = attenuation.getZ();
-        float b = attenuation.getY();
-        float c = attenuation.getX() - COLOR_DEPTH * getIntensity() * getColor().max();
+        float a = attenuation.getExponent();
+        float b = attenuation.getLinear();
+        float c = attenuation.getConstant() - COLOR_DEPTH * getIntensity() * getColor().max();
 
         this.range = (float)(-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
 
@@ -35,34 +36,10 @@ public class PointLight extends BaseLight
         this.range = range;
     }
 
-    public float getConstant()
+    public Attenuation getAttenuation()
     {
-        return attenuation.getX();
+        return attenuation;
     }
 
-    public void setConstant(float constant)
-    {
-        attenuation.setX(constant);
-    }
-
-    public float getLinear()
-    {
-        return attenuation.getY();
-    }
-
-    public void setLinear(float linear)
-    {
-        attenuation.setY(linear);
-    }
-
-    public float getExponent()
-    {
-        return attenuation.getZ();
-    }
-
-    public void setExponent(float exponent)
-    {
-        attenuation.setZ(exponent);
-    }
 
 }

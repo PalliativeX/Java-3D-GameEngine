@@ -19,11 +19,7 @@ public class ForwardPoint extends Shader
 
     private ForwardPoint()
     {
-        super();
-
-        addVertexShaderFromFile("forward-point.vert");
-        addFragmentShaderFromFile("forward-point.frag");
-        compileShader();
+        super("forward-point");
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)
@@ -52,9 +48,9 @@ public class ForwardPoint extends Shader
     public void setUniformPointLight(String uniformName, PointLight pointLight)
     {
         setUniformBaseLight(uniformName + ".base", pointLight);
-        setUniformf(uniformName + ".attenuation.constant", pointLight.getConstant());
-        setUniformf(uniformName + ".attenuation.linear", pointLight.getLinear());
-        setUniformf(uniformName + ".attenuation.exponent", pointLight.getExponent());
+        setUniformf(uniformName + ".attenuation.constant", pointLight.getAttenuation().getConstant());
+        setUniformf(uniformName + ".attenuation.linear", pointLight.getAttenuation().getLinear());
+        setUniformf(uniformName + ".attenuation.exponent", pointLight.getAttenuation().getExponent());
         setUniformVec3(uniformName + ".position", pointLight.getTransform().getPosition());
         setUniformf(uniformName + ".range", pointLight.getRange());
     }

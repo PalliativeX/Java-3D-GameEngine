@@ -7,6 +7,7 @@ import com.base.engine.core.math.Quaternion;
 import com.base.engine.core.math.Vector2f;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.*;
+import com.base.engine.rendering.light.Attenuation;
 
 public class TestGame extends Game
 {
@@ -69,14 +70,14 @@ public class TestGame extends Game
         directionalLightObject.addComponent(directionalLight);
 
         GameObject pointLightObject = new GameObject();
-        pointLightObject.addComponent(new PointLight(new Vector3f(0,1,0), 0.4f, new Vector3f(0,0,1)));
+        pointLightObject.addComponent(new PointLight(new Vector3f(0,1,0), 0.4f, new Attenuation(0,0,1)));
 
         GameObject pointLightObject2 = new GameObject();
-        pointLightObject2.addComponent(new PointLight(new Vector3f(0.8f,0.5f,0.5f), 0.6f, new Vector3f(0,0,0.6f)));
+        pointLightObject2.addComponent(new PointLight(new Vector3f(0.8f,0.5f,0.5f), 0.6f, new Attenuation(0,0,0.6f)));
         pointLightObject2.getTransform().setPosition(new Vector3f(6, 6 , 6));
 
         SpotLight spotLight = new SpotLight(new Vector3f(0,1,1), 0.4f,
-                new Vector3f(0,0,0.1f), 0.7f);
+                new Attenuation(0,0,0.1f), 0.7f);
 
         GameObject spotLightObject = new GameObject();
         spotLightObject.addComponent(spotLight);
@@ -93,7 +94,7 @@ public class TestGame extends Game
 
         GameObject testMesh1 = new GameObject().addComponent(new MeshRenderer(mesh2, material));
         GameObject testMesh2 = new GameObject().addComponent(new MeshRenderer(mesh2, material2));
-        GameObject testMesh3 = new GameObject().addComponent(new MeshRenderer(tempMesh, material3));
+        GameObject testMesh3 = new GameObject().addComponent(new LookAtComponent()).addComponent(new MeshRenderer(tempMesh, material));
 
 
         testMesh1.getTransform().getPosition().set(0, 2, 0);
@@ -108,10 +109,10 @@ public class TestGame extends Game
         addObject(testMesh1);
         addObject(testMesh3);
 
-        GameObject camera = new GameObject().addComponent(new Camera((float)Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000.0f));
+        GameObject camera = new GameObject().addComponent(new FreeLook(0.4f)).addComponent(new FreeMove(9.f)).addComponent(new Camera((float)Math.toRadians(70.0f), (float)Window.getWidth()/(float)Window.getHeight(), 0.01f, 1000.0f));
 
         SpotLight cameraFlashLight = new SpotLight(new Vector3f(1,1,1), 0.9f,
-                new Vector3f(0,0,0.2f), 0.8f);
+                new Attenuation(0,0,0.2f), 0.8f);
         camera.addComponent(cameraFlashLight);
 
         addObject(camera);

@@ -19,11 +19,7 @@ public class ForwardDirectional extends Shader
 
     private ForwardDirectional()
     {
-        super();
-
-        addVertexShaderFromFile("forward-directional.vert");
-        addFragmentShaderFromFile("forward-directional.frag");
-        compileShader();
+        super("forward-directional");
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)

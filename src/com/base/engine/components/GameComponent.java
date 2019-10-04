@@ -1,9 +1,8 @@
 package com.base.engine.components;
 
-import com.base.engine.core.GameObject;
-import com.base.engine.rendering.RenderingEngine;
+import com.base.engine.core.*;
+import com.base.engine.rendering.*;
 import com.base.engine.core.math.Transform;
-import com.base.engine.rendering.Shader;
 
 public abstract class GameComponent
 {
@@ -23,5 +22,5 @@ public abstract class GameComponent
         return parent.getTransform();
     }
 
-    public void addToRenderingEngine(RenderingEngine renderingEngine) {}
+    public void addToEngine(CoreEngine engine) {}
 }
