@@ -5,7 +5,7 @@ import com.base.engine.rendering.*;
 
 public class ForwardAmbient extends Shader
 {
-    private static ForwardAmbient instance = new ForwardAmbient();
+    private static ForwardAmbient instance;
 
     public static ForwardAmbient getInstance()
     {

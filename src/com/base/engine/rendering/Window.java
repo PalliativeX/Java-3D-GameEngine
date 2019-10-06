@@ -34,6 +34,17 @@ public class Window
         Mouse.destroy();
     }
 
+//    public static void setFullScreen()
+//    {
+//        try {
+//            Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
+//            Display.setVSyncEnabled(true);
+//        } catch (LWJGLException e) {
+//            e.printStackTrace();
+//            System.err.println("Cannot set fullscreen mode!");
+//            System.exit(1);
+//        }
+//    }
 
     public static boolean isCloseRequested()
     {
@@ -50,7 +61,7 @@ public class Window
         return Display.getDisplayMode().getHeight();
     }
 
-    public static String gettitle()
+    public static String getTitle()
     {
         return Display.getTitle();
     }

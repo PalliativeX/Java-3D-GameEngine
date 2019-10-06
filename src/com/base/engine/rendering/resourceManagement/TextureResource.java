@@ -1,6 +1,6 @@
 package com.base.engine.rendering.resourceManagement;
 
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 
 public class TextureResource
@@ -15,7 +15,7 @@ public class TextureResource
     @Override
     protected void finalize() throws Throwable
     {
-        glDeleteBuffers(id);
+        glDeleteTextures(id);
     }
 
     public int getId() { return id; }

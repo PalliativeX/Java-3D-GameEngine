@@ -60,6 +60,9 @@ public class CoreEngine
         double unprocessedTime = 0;
 
         while(isRunning) {
+            this.width = Window.getWidth();
+            this.height = Window.getHeight();
+
             boolean render = false;
 
             double startTime = Time.getTime();
