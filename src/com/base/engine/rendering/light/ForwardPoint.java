@@ -10,16 +10,37 @@ import com.base.engine.rendering.Shader;
 
 public class ForwardPoint extends Shader
 {
-    private static final ForwardPoint instance = new ForwardPoint();
+    private static ForwardPoint instance;
 
     public static ForwardPoint getInstance()
     {
+        if (instance == null)
+            instance = new ForwardPoint();
         return instance;
     }
 
     private ForwardPoint()
     {
-        super("forward-point");
+        super();
+
+        addVertexShaderFromFile("forward-point.vert");
+        addFragmentShaderFromFile("forward-point.frag");
+        compileShader();
+
+        addUniform("model");
+        addUniform("MVP");
+
+        addUniform("specularIntensity");
+        addUniform("specularPower");
+        addUniform("eyePos");
+
+        addUniform("pointLight.base.color");
+        addUniform("pointLight.base.intensity");
+        addUniform("pointLight.attenuation.constant");
+        addUniform("pointLight.attenuation.linear");
+        addUniform("pointLight.attenuation.exponent");
+        addUniform("pointLight.position");
+        addUniform("pointLight.range");
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)
@@ -27,7 +48,8 @@ public class ForwardPoint extends Shader
         Matrix4f worldMatrix = transform.getTransformation();
         Matrix4f projectedMatrix = renderingEngine.getMainCamera().getViewProjection().multiply(worldMatrix);
 
-        material.getTexture("diffuse").bind();
+        material.getTexture("diffuse").bind(0);
+        material.getTexture("normalMap").bind(1);
 
         setUniformMat4("model", worldMatrix);
         setUniformMat4("MVP", projectedMatrix);

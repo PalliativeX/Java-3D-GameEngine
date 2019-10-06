@@ -10,16 +10,34 @@ import com.base.engine.rendering.Shader;
 
 public class ForwardDirectional extends Shader
 {
-    private static final ForwardDirectional instance = new ForwardDirectional();
+    private static ForwardDirectional instance;
 
     public static ForwardDirectional getInstance()
     {
+        if (instance == null)
+            instance = new ForwardDirectional();
         return instance;
     }
 
     private ForwardDirectional()
     {
-        super("forward-directional");
+        super();
+
+        addVertexShaderFromFile("forward-directional.vert");
+        addFragmentShaderFromFile("forward-directional.frag");
+
+        compileShader();
+
+        addUniform("model");
+        addUniform("MVP");
+
+        addUniform("specularIntensity");
+        addUniform("specularPower");
+        addUniform("eyePos");
+
+        addUniform("directionalLight.base.color");
+        addUniform("directionalLight.base.intensity");
+        addUniform("directionalLight.direction");
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)
@@ -27,7 +45,8 @@ public class ForwardDirectional extends Shader
         Matrix4f worldMatrix = transform.getTransformation();
         Matrix4f projectedMatrix = renderingEngine.getMainCamera().getViewProjection().multiply(worldMatrix);
 
-        material.getTexture("diffuse").bind();
+        material.getTexture("diffuse").bind(0);
+        material.getTexture("normalMap").bind(1);
 
         setUniformMat4("model", worldMatrix);
         setUniformMat4("MVP", projectedMatrix);

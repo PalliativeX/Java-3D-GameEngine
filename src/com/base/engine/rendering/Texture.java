@@ -11,6 +11,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 public class Texture
 {
@@ -36,8 +38,20 @@ public class Texture
 
     }
 
+    public void unbind()
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
     public void bind()
     {
+        bind(0);
+    }
+
+    public void bind(int samplerSlot)
+    {
+        assert(samplerSlot >= 0 && samplerSlot <= 31);
+        glActiveTexture(GL_TEXTURE0 + samplerSlot);
         glBindTexture(GL_TEXTURE_2D, resource.getId());
     }
 
@@ -82,7 +96,7 @@ public class Texture
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
             return resource;
         }

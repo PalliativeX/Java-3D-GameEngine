@@ -2,7 +2,6 @@
 
 in vec2 TexCoord;
 
-
 uniform vec3 ambientIntensity;
 uniform sampler2D sampler;
 

@@ -6,16 +6,39 @@ import com.base.engine.rendering.*;
 
 public class ForwardSpot extends Shader
 {
-    private static final ForwardSpot instance = new ForwardSpot();
+    private static ForwardSpot instance;
 
     public static ForwardSpot getInstance()
     {
+        if (instance == null)
+            instance = new ForwardSpot();
         return instance;
     }
 
     private ForwardSpot()
     {
-        super("forward-spot");
+        super();
+
+        addVertexShaderFromFile("forward-spot.vert");
+        addFragmentShaderFromFile("forward-spot.frag");
+        compileShader();
+
+        addUniform("model");
+        addUniform("MVP");
+
+        addUniform("specularIntensity");
+        addUniform("specularPower");
+        addUniform("eyePos");
+
+        addUniform("spotLight.pointLight.base.color");
+        addUniform("spotLight.pointLight.base.intensity");
+        addUniform("spotLight.pointLight.attenuation.constant");
+        addUniform("spotLight.pointLight.attenuation.linear");
+        addUniform("spotLight.pointLight.attenuation.exponent");
+        addUniform("spotLight.pointLight.position");
+        addUniform("spotLight.pointLight.range");
+        addUniform("spotLight.direction");
+        addUniform("spotLight.cutOff");
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)
@@ -23,7 +46,8 @@ public class ForwardSpot extends Shader
         Matrix4f worldMatrix = transform.getTransformation();
         Matrix4f projectedMatrix = renderingEngine.getMainCamera().getViewProjection().multiply(worldMatrix);
 
-        material.getTexture("diffuse").bind();
+        material.getTexture("diffuse").bind(0);
+        material.getTexture("normalMap").bind(1);
 
         setUniformMat4("model", worldMatrix);
         setUniformMat4("MVP", projectedMatrix);

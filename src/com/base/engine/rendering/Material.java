@@ -12,9 +12,9 @@ public class Material
 
     public Material()
     {
-        textureHashMap  = new HashMap<String, Texture>();
-        vector3fHashMap = new HashMap<String, Vector3f>();
-        floatHashMap    = new HashMap<String, Float>();
+        textureHashMap  = new HashMap<>();
+        vector3fHashMap = new HashMap<>();
+        floatHashMap    = new HashMap<>();
     }
 
     public void addTexture(String name, Texture texture) { textureHashMap.put(name, texture); }

@@ -33,7 +33,7 @@ public class RenderingEngine
         glEnable(GL_TEXTURE_2D);
 
 
-        ambientLight = new Vector3f(0.1f, 0.1f, 0.1f);
+        ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
     }
 
     public Vector3f getAmbientLight()
@@ -44,9 +44,6 @@ public class RenderingEngine
     public void render(GameObject object)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        //lights.clear();
-        //object.addToEngine(this);
 
         Shader forwardAmbient = ForwardAmbient.getInstance();
         object.renderAll(forwardAmbient, this);
