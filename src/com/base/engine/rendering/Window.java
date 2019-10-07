@@ -7,6 +7,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import static org.lwjgl.opengl.GL11.glViewport;
+
 public class Window
 {
     public static void createWindow(int width, int height, String title) {
@@ -34,17 +36,18 @@ public class Window
         Mouse.destroy();
     }
 
-//    public static void setFullScreen()
-//    {
-//        try {
-//            Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
-//            Display.setVSyncEnabled(true);
-//        } catch (LWJGLException e) {
-//            e.printStackTrace();
-//            System.err.println("Cannot set fullscreen mode!");
-//            System.exit(1);
-//        }
-//    }
+    public static void setFullScreen()
+    {
+        try {
+            Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
+            Display.setVSyncEnabled(true);
+            glViewport(0, 0, Display.getWidth(), Display.getHeight());
+        } catch (LWJGLException e) {
+            e.printStackTrace();
+            System.err.println("Cannot set fullscreen mode!");
+            System.exit(1);
+        }
+    }
 
     public static boolean isCloseRequested()
     {

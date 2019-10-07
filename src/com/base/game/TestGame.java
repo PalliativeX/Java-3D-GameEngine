@@ -92,9 +92,12 @@ public class TestGame extends Game
         GameObject testMesh3 = new GameObject().addComponent(new LookAtComponent()).addComponent(new MeshRenderer(tempMesh, mosaicMaterial));
 
         // camera with a freelook and freemove
-        addObject(new GameObject().addComponent(new FreeLook(0.5f)).addComponent(new FreeMove(10.0f)).addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f)).addComponent(spotLight2));
+
+        GameObject cameraObject = new GameObject().addComponent(new FreeLook(0.5f)).addComponent(new FreeMove(10.0f)).addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f));
 
         addObject(testMesh3);
+
+        addObject(cameraObject);
 
         testMesh3.getTransform().getPosition().set(5,5,5);
         testMesh3.getTransform().setRotation(new Quaternion(new Vector3f(0,1,0), (float)Math.toRadians(-70.0f)));
@@ -102,5 +105,8 @@ public class TestGame extends Game
         addObject(new GameObject().addComponent(new MeshRenderer(new Mesh("monkey.obj"), snowMaterial)));
 
         directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-45)));
+
+        Window.setFullScreen();
+
     }
 }
