@@ -39,6 +39,17 @@ public class TestGame extends Game
         mosaicMaterial.addFloat("specularIntensity", 1);
         mosaicMaterial.addFloat("specularPower", 8);
 
+        Material grassMaterial = new Material();
+        grassMaterial.addTexture("diffuse", new Texture("grass.png"));
+        grassMaterial.addTexture("normalMap", new Texture("grassNormal.png"));
+        grassMaterial.addFloat("specularIntensity", 0.3f);
+        grassMaterial.addFloat("specularPower", 4);
+
+        Material semitransparentMaterial = new Material();
+        semitransparentMaterial.addTexture("diffuse", new Texture("transparent_window.png"));
+        semitransparentMaterial.addTexture("normalMap", new Texture("transparent_windowNormal.png"));
+        semitransparentMaterial.addFloat("specularIntensity", 0.3f);
+        semitransparentMaterial.addFloat("specularPower", 4);
 
         Mesh tempMesh = new Mesh("monkey.obj");
 
@@ -90,23 +101,32 @@ public class TestGame extends Game
         addObject(spotLightObject);
 
         GameObject testMesh3 = new GameObject().addComponent(new LookAtComponent()).addComponent(new MeshRenderer(tempMesh, mosaicMaterial));
-
-        // camera with a freelook and freemove
-
-        GameObject cameraObject = new GameObject().addComponent(new FreeLook(0.5f)).addComponent(new FreeMove(10.0f)).addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f));
-
         addObject(testMesh3);
-
-        addObject(cameraObject);
-
         testMesh3.getTransform().getPosition().set(5,5,5);
         testMesh3.getTransform().setRotation(new Quaternion(new Vector3f(0,1,0), (float)Math.toRadians(-70.0f)));
+
+        // camera with a freelook and freemove
+        GameObject cameraObject = new GameObject().addComponent(new FreeLook(0.5f)).addComponent(new FreeMove(10.0f)).addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f));
+        addObject(cameraObject);
+
+        GameObject grassObj = new GameObject().addComponent(new MeshRenderer(mesh, grassMaterial));
+        grassObj.getTransform().setPosition(new Vector3f(3, -0.2f, 6));
+        grassObj.getTransform().setScale(new Vector3f(0.1f, 0.1f, 0.1f));
+        grassObj.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(90f)));
+        addObject(grassObj);
 
         addObject(new GameObject().addComponent(new MeshRenderer(new Mesh("monkey.obj"), snowMaterial)));
 
         directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-45)));
 
+        GameObject windowObj = new GameObject().addComponent(new MeshRenderer(mesh, semitransparentMaterial));
+        windowObj.getTransform().setPosition(new Vector3f(3, 0, 9));
+        windowObj.getTransform().setScale(new Vector3f(0.1f, 0.1f, 0.1f));
+        windowObj.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(-90f)));
+        addObject(windowObj);
+
         Window.setFullScreen();
 
+        getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.5f, 0.5f, 0.3f));
     }
 }

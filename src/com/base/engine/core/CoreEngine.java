@@ -21,7 +21,7 @@ public class CoreEngine
         this.width = width;
         this.height = height;
         this.frameTime = 1.0 / framerate;
-        game.setEngine(this);
+        game.setCoreEngine(this);
     }
 
     public void createWindow(String title)
@@ -88,7 +88,6 @@ public class CoreEngine
                 game.update((float)frameTime);
 
                 if (frameCounter >= 1.0) {
-                    //System.out.println(frames);
                     frames = 0;
                     frameCounter = 0;
             }

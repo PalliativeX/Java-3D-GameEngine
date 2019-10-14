@@ -17,14 +17,14 @@ public class FreeLook extends GameComponent
         this.sensitivity = sensitivity;
         mouseLocked = true;
 
-        Input.setMousePosition(new Vector2f(Window.getWidth() / 2, Window.getHeight() / 2));
+        Input.setMousePosition(new Vector2f(Window.getWidth() / 2.f, Window.getHeight() / 2.f));
         Input.setCursor(false);
     }
 
     @Override
     public void input(float delta)
     {
-        Vector2f centerPosition = new Vector2f(Window.getWidth() / 2, Window.getHeight() / 2);
+        Vector2f centerPosition = new Vector2f(Window.getWidth() / 2.f, Window.getHeight() / 2.f);
 
         if (Input.getKey(Input.KEY_ESCAPE)) {
             Input.setCursor(true);

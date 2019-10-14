@@ -8,6 +8,8 @@ import com.base.engine.rendering.light.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.*;
+import static org.lwjgl.opengl.GL20.glBlendEquationSeparate;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
 public class RenderingEngine
@@ -28,11 +30,13 @@ public class RenderingEngine
         glFrontFace(GL_CW);
         glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
+
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_DEPTH_CLAMP);
+
         glEnable(GL_TEXTURE_2D);
 
-
+        // set to 0.3f by default
         ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
     }
 
@@ -41,17 +45,22 @@ public class RenderingEngine
         return ambientLight;
     }
 
+    public void setAmbientLight(Vector3f ambient)
+    {
+        ambientLight = ambient;
+    }
+
     public void render(GameObject object)
     {
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // blending all colors from multiple shader passes
+        glEnable(GL_BLEND);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
         Shader forwardAmbient = ForwardAmbient.getInstance();
         object.renderAll(forwardAmbient, this);
 
-        // blending all colors from multiple shader passes
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
         glDepthMask(false);
         glDepthFunc(GL_EQUAL);
 

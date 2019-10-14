@@ -5,6 +5,7 @@ import com.base.engine.rendering.RenderingEngine;
 public abstract class Game
 {
     private GameObject root;
+    private CoreEngine coreEngine;
 
     public void init() {}
 
@@ -36,6 +37,15 @@ public abstract class Game
         return root;
     }
 
-    public void setEngine(CoreEngine engine) { getRootObject().setEngine(engine); }
+    public CoreEngine getCoreEngine()
+    {
+        return coreEngine;
+    }
+
+    public void setCoreEngine(CoreEngine coreEngine)
+    {
+        this.coreEngine = coreEngine;
+        getRootObject().setEngine(coreEngine);
+    }
 
 }
