@@ -67,7 +67,7 @@ public class Mesh
         resource = new MeshResource(indices.length);
 
         glBindBuffer(GL_ARRAY_BUFFER, resource.getVbo());
-        GL15.glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(vertices), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(vertices), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource.getIbo());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, Util.createFlippedBuffer(indices), GL_STATIC_DRAW);

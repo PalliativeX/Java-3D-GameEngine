@@ -147,6 +147,16 @@ public class Matrix4f
         return result;
     }
 
+    public Matrix4f removeTranslation()
+    {
+        m[0][3] = 0;
+        m[1][3] = 0;
+        m[2][3] = 0;
+        m[3][3] = 0;
+
+        return this;
+    }
+
     public float[][] getM()
     {
         float[][] res = new float[4][4];

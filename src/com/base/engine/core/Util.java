@@ -70,6 +70,17 @@ public class Util
         return buffer;
     }
 
+    public static FloatBuffer createFlippedBuffer(float[] values)
+    {
+        FloatBuffer buffer = createFloatBuffer(values.length);
+
+        for (int i = 0; i < values.length; i++)
+            buffer.put(values[i]);
+
+        buffer.flip();
+        return buffer;
+    }
+
     public static String[] removeEmptyString(String[] data)
     {
         ArrayList<String> result = new ArrayList<>();

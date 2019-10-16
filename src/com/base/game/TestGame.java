@@ -127,6 +127,16 @@ public class TestGame extends Game
 
         Window.setFullScreen();
 
-        getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.5f, 0.5f, 0.3f));
+        getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.2f, 0.2f, 0.2f));
+
+        String[] faces = {
+                "skybox/right.jpg",
+                "skybox/left.jpg",
+                "skybox/top.jpg",
+                "skybox/bottom.jpg",
+                "skybox/front.jpg",
+                "skybox/back.jpg",
+        };
+        getCoreEngine().getRenderingEngine().setCubemap(faces);
     }
 }
