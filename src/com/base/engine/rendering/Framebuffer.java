@@ -5,6 +5,8 @@ import com.base.engine.core.Util;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT24;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -76,18 +78,17 @@ public class Framebuffer
     private void setFBVertexArray()
     {
         float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-                // positions   // texCoords
-                -1.f, -1.f, 0.f, 0.f,
-                -1.f,  0.f, 0.f, 1.f,
-                 1.f,  1.f, 1.f, 1.f,
-                 1.f,  1.f, 1.f, 1.f,
-                 1.f, -1.f, 1.f, 0.f,
-                -1.f, -1.f, 0.f, 0.f,
+                 // positions     texCoords
+                    -1.f, -1.f,   0.f, 0.f,
+                    -1.f,  1.f,   0.f, 1.f,
+                     1.f,  1.f,   1.f, 1.f,
+                     1.f,  1.f,   1.f, 1.f,
+                     1.f, -1.f,   1.f, 0.f,
+                    -1.f, -1.f,   0.f, 0.f,
         };
 
-        int quadVBO;
         quadVAO = glGenVertexArrays();
-        quadVBO = glGenBuffers();
+        int quadVBO = glGenBuffers();
 
         glBindVertexArray(quadVAO);
         glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
@@ -95,9 +96,9 @@ public class Framebuffer
         glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(quadVertices), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, false, 2 * 4, 0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 2 * 4, 8);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 4 * 4, 8);
 
         glBindBuffer(GL_ARRAY_BUFFER,0);
         glBindVertexArray(0);
@@ -109,11 +110,12 @@ public class Framebuffer
     {
         if (bind) {
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-            glBindTexture(GL_TEXTURE_2D, colorbufferTexture);
+            //glActiveTexture(GL_TEXTURE0);
+            //glBindTexture(GL_TEXTURE_2D, colorbufferTexture);
         }
         else {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glBindTexture(GL_TEXTURE_2D, 0);
+            //glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 
@@ -151,11 +153,6 @@ public class Framebuffer
             compileShader();
 
             addUniform("screenTexture");
-        }
-
-        public void updateUniforms()
-        {
-            glBindTexture(GL_TEXTURE_2D, colorbufferTexture);
         }
 
     }

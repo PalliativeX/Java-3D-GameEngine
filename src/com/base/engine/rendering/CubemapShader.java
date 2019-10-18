@@ -1,7 +1,6 @@
 package com.base.engine.rendering;
 
 import com.base.engine.core.math.Matrix4f;
-import com.sun.javafx.geom.Matrix3f;
 
 public class CubemapShader extends Shader
 {

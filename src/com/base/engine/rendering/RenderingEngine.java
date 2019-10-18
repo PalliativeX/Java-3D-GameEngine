@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -49,7 +50,7 @@ public class RenderingEngine
         glEnable(GL_TEXTURE_2D);
 
         // set to 0.3f by default
-        ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+        ambientLight = new Vector3f(0.15f, 0.15f, 0.15f);
 
         framebuffer = new Framebuffer();
     }
@@ -107,21 +108,17 @@ public class RenderingEngine
         framebuffer.bind(false);
         glDisable(GL_DEPTH_CLAMP);
         glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         framebuffer.getFbShader().bind();
         glBindVertexArray(framebuffer.getQuadVAO());
-        glActiveTexture(0);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, framebuffer.getColorbufferTexture());
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glEnable(GL_DEPTH_CLAMP);
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glFrontFace(GL_CW);
-        glCullFace(GL_BACK);
     }
 
     public static String getOpenGLVersion()
@@ -159,4 +156,8 @@ public class RenderingEngine
         this.cubemap = new Cubemap(faces, new CubemapShader());
     }
 
+    public Framebuffer getFramebuffer()
+    {
+        return framebuffer;
+    }
 }

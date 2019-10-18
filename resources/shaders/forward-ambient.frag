@@ -10,5 +10,6 @@ void main()
     vec4 color = texture2D(sampler, TexCoord);
     if (color.a < 0.125)
         discard;
+
     gl_FragColor = color * vec4(ambientIntensity, 1.0);
 }
