@@ -71,6 +71,6 @@ public class Window
 
     public Vector2f getCenter()
     {
-        return new Vector2f(getWidth()/2, getHeight()/2);
+        return new Vector2f(getWidth()/2.f, getHeight()/2.f);
     }
 }

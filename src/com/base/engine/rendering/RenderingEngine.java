@@ -2,21 +2,13 @@ package com.base.engine.rendering;
 
 import com.base.engine.components.*;
 import com.base.engine.core.GameObject;
-import com.base.engine.core.Util;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.light.*;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.glBlendEquationSeparate;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
@@ -32,7 +24,10 @@ public class RenderingEngine
     private ArrayList<BaseLight> lights;
     private BaseLight activeLight;
 
-    private Cubemap cubemap;
+    private Skybox skybox;
+
+    // different post-processing effects
+    private boolean isBlurEnabled = false;
 
     public RenderingEngine()
     {
@@ -40,6 +35,7 @@ public class RenderingEngine
 
         glClearColor(0.1f, 0.1f, 0.1f, 0.f);
 
+        // setting clockwise order for face culling
         glFrontFace(GL_CW);
         glCullFace(GL_BACK);
         glEnable(GL_CULL_FACE);
@@ -47,9 +43,6 @@ public class RenderingEngine
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_DEPTH_CLAMP);
 
-        glEnable(GL_TEXTURE_2D);
-
-        // set to 0.3f by default
         ambientLight = new Vector3f(0.15f, 0.15f, 0.15f);
 
         framebuffer = new Framebuffer();
@@ -74,12 +67,12 @@ public class RenderingEngine
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // displaying cubemap
-            if (cubemap != null) {
+            // displaying skybox
+            if (skybox != null) {
                 glDepthFunc(GL_LEQUAL);
-                cubemap.getCubemapShader().bind();
-                cubemap.getCubemapShader().updateUniforms(cubemap, this);
-                glBindVertexArray(cubemap.getSkyboxVAO());
+                skybox.getSkyboxShader().bind();
+                skybox.getSkyboxShader().updateUniforms(skybox, this);
+                glBindVertexArray(skybox.getSkyboxVAO());
                 glDrawArrays(GL_TRIANGLES, 0, 36);
                 glBindVertexArray(0);
                 glDepthFunc(GL_LESS);
@@ -111,10 +104,9 @@ public class RenderingEngine
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        framebuffer.getFbShader().bind();
+        framebuffer.getFramebufferShader().bind();
+        framebuffer.getFramebufferShader().updateUniforms(isBlurEnabled);
         glBindVertexArray(framebuffer.getQuadVAO());
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, framebuffer.getColorbufferTexture());
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glEnable(GL_DEPTH_CLAMP);
@@ -151,13 +143,24 @@ public class RenderingEngine
         return activeLight;
     }
 
-    public void setCubemap(String[] faces)
+    public void setSkybox(String[] faces)
     {
-        this.cubemap = new Cubemap(faces, new CubemapShader());
+        this.skybox = new Skybox(faces);
     }
 
     public Framebuffer getFramebuffer()
     {
         return framebuffer;
     }
+
+    public boolean isBlurEnabled()
+    {
+        return isBlurEnabled;
+    }
+
+    public void setBlurEnabled(boolean blurEnabled)
+    {
+        isBlurEnabled = blurEnabled;
+    }
+
 }

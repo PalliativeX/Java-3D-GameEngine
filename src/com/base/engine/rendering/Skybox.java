@@ -1,6 +1,7 @@
 package com.base.engine.rendering;
 
 import com.base.engine.core.Util;
+import com.base.engine.core.math.Matrix4f;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,27 +17,57 @@ import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class Cubemap
+public class Skybox
 {
     private static final int FACES_NUM = 6;
 
-    private int id;
+    private int skyboxID;
     private int skyboxVAO;
-    private CubemapShader cubemapShader;
+    private SkyboxShader skyboxShader;
 
-    public Cubemap(String[] faces, CubemapShader cubemapShader)
+    public Skybox(String[] faces)
     {
+        skyboxShader = new SkyboxShader();
+
         if (faces.length != FACES_NUM) {
             System.out.println("Wrong number of faces supplied, must be 6!");
             System.exit(1);
         }
 
-        id = loadCubemap(faces);
+        skyboxID = loadCubemap(faces);
 
-        this.cubemapShader = cubemapShader;
+        skyboxVAO = createSkyboxVAO();
+    }
 
+    class SkyboxShader extends Shader
+    {
+        SkyboxShader()
+        {
+            super();
+
+            addVertexShaderFromFile("skybox.vert");
+            addFragmentShaderFromFile("skybox.frag");
+            compileShader();
+
+            addUniform("viewProjection");
+        }
+
+        void updateUniforms(Skybox skybox, RenderingEngine renderingEngine)
+        {
+            Matrix4f projectedMatrix = renderingEngine.getMainCamera().getViewProjection().removeTranslation();
+
+            skybox.bind();
+
+            setUniformMat4("viewProjection", projectedMatrix);
+        }
+    }
+
+
+    private int createSkyboxVAO()
+    {
         float skyboxVertices[] = {
                 // positions
                 -1.0f,  1.0f, -1.0f,
@@ -96,7 +127,7 @@ public class Cubemap
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        this.skyboxVAO = skyboxVAO;
+        return skyboxVAO;
     }
 
     public void unbind()
@@ -106,12 +137,20 @@ public class Cubemap
 
     public void bind()
     {
-        glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
     }
 
-    public int getId()
+    public void bind(boolean doBind)
     {
-        return id;
+        if (doBind)
+            glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
+        else
+            glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
+
+    public int getSkyboxID()
+    {
+        return skyboxID;
     }
 
     public int getSkyboxVAO()
@@ -119,13 +158,13 @@ public class Cubemap
         return skyboxVAO;
     }
 
-    public CubemapShader getCubemapShader()
+    public SkyboxShader getSkyboxShader()
     {
-        return cubemapShader;
+        return skyboxShader;
     }
 
     private int imageWidth, imageHeight;
-    int loadCubemap(String[] faces)
+    private int loadCubemap(String[] faces)
     {
         int cubemapID = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapID);
@@ -137,7 +176,7 @@ public class Cubemap
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB8, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
             }
             else {
-                System.out.println("Cubemap texture failed to load at path: ");
+                System.out.println("Skybox texture failed to load at path: ");
             }
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -151,7 +190,7 @@ public class Cubemap
         return cubemapID;
     }
 
-    ByteBuffer loadImage(String fileName)
+    private ByteBuffer loadImage(String fileName)
     {
         try {
             BufferedImage image = ImageIO.read(new File("./resources/textures/" + fileName));
@@ -175,7 +214,7 @@ public class Cubemap
             return buffer;
         }
         catch (IOException e) {
-            System.out.println("Cubemap texture failed to load!");
+            System.out.println("Skybox texture failed to load!");
             e.printStackTrace();
             System.exit(1);
         }
@@ -183,6 +222,10 @@ public class Cubemap
         return null;
     }
 
-
-
+    @Override
+    protected void finalize() throws Throwable
+    {
+        glDeleteTextures(skyboxID);
+        glDeleteVertexArrays(skyboxVAO);
+    }
 }

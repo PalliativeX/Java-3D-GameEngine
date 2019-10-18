@@ -16,13 +16,15 @@ import static org.lwjgl.opengl.GL30.*;
 public class Framebuffer
 {
     private int fbo;
+
+    private int rbo;
     private int colorbufferTexture;
     private int quadVAO;
-    private FramebufferShader fbShader;
+    private FramebufferShader framebufferShader;
 
     public Framebuffer()
     {
-        fbShader = new FramebufferShader();
+        framebufferShader = new FramebufferShader();
 
         fbo = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -64,7 +66,6 @@ public class Framebuffer
     {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-        int rbo;
         rbo = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 
@@ -77,8 +78,8 @@ public class Framebuffer
 
     private void setFBVertexArray()
     {
-        float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-                 // positions     texCoords
+        float quadVertices[] = {
+                  // positions    texCoords
                     -1.f, -1.f,   0.f, 0.f,
                     -1.f,  1.f,   0.f, 1.f,
                      1.f,  1.f,   1.f, 1.f,
@@ -110,18 +111,15 @@ public class Framebuffer
     {
         if (bind) {
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-            //glActiveTexture(GL_TEXTURE0);
-            //glBindTexture(GL_TEXTURE_2D, colorbufferTexture);
         }
         else {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            //glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 
-    public FramebufferShader getFbShader()
+    public FramebufferShader getFramebufferShader()
     {
-        return fbShader;
+        return framebufferShader;
     }
 
     public int getColorbufferTexture()
@@ -139,12 +137,14 @@ public class Framebuffer
     {
         glDeleteFramebuffers(fbo);
         glDeleteVertexArrays(quadVAO);
-        // need to delete rb and texture as well
+        glDeleteRenderbuffers(rbo);
+        glDeleteTextures(colorbufferTexture);
+
     }
 
     class FramebufferShader extends Shader
     {
-        public FramebufferShader()
+        FramebufferShader()
         {
             super();
 
@@ -153,6 +153,15 @@ public class Framebuffer
             compileShader();
 
             addUniform("screenTexture");
+            addUniform("blurEnabled");
+        }
+
+        void updateUniforms(boolean isBlurEnabled)
+        {
+            setUniformi("blurEnabled", isBlurEnabled ? 1 : 0);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, getColorbufferTexture());
         }
 
     }

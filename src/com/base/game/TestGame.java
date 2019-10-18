@@ -137,6 +137,8 @@ public class TestGame extends Game
                 "skybox/front.jpg",
                 "skybox/back.jpg",
         };
-        getCoreEngine().getRenderingEngine().setCubemap(faces);
+        getCoreEngine().getRenderingEngine().setSkybox(faces);
+        getCoreEngine().getRenderingEngine().setBlurEnabled(true);
     }
+
 }
