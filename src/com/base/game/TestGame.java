@@ -125,7 +125,7 @@ public class TestGame extends Game
         windowObj.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(-90f)));
         addObject(windowObj);
 
-        Window.setFullScreen();
+        //Window.setFullScreen();
 
         getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.2f, 0.2f, 0.2f));
 

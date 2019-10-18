@@ -11,14 +11,22 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Cubemap
 {
     private static final int FACES_NUM = 6;
 
     private int id;
+    private int skyboxVAO;
+    private CubemapShader cubemapShader;
 
-    public Cubemap(String[] faces)
+    public Cubemap(String[] faces, CubemapShader cubemapShader)
     {
         if (faces.length != FACES_NUM) {
             System.out.println("Wrong number of faces supplied, must be 6!");
@@ -26,6 +34,69 @@ public class Cubemap
         }
 
         id = loadCubemap(faces);
+
+        this.cubemapShader = cubemapShader;
+
+        float skyboxVertices[] = {
+                // positions
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                 1.0f, -1.0f, -1.0f,
+                 1.0f, -1.0f, -1.0f,
+                 1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                 1.0f, -1.0f, -1.0f,
+                 1.0f, -1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f, -1.0f,
+                 1.0f, -1.0f, -1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                -1.0f,  1.0f, -1.0f,
+                 1.0f,  1.0f, -1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                 1.0f, -1.0f, -1.0f,
+                 1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                 1.0f, -1.0f,  1.0f
+        };
+        int skyboxVAO, skyboxVBO;
+        skyboxVAO = glGenVertexArrays();
+        skyboxVBO = glGenBuffers();
+
+        glBindVertexArray(skyboxVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(skyboxVertices), GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * 4, 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        this.skyboxVAO = skyboxVAO;
     }
 
     public void unbind()
@@ -41,6 +112,16 @@ public class Cubemap
     public int getId()
     {
         return id;
+    }
+
+    public int getSkyboxVAO()
+    {
+        return skyboxVAO;
+    }
+
+    public CubemapShader getCubemapShader()
+    {
+        return cubemapShader;
     }
 
     private int imageWidth, imageHeight;
@@ -101,5 +182,7 @@ public class Cubemap
 
         return null;
     }
+
+
 
 }

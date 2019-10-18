@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glBlendEquationSeparate;
@@ -25,12 +26,12 @@ public class RenderingEngine
     private Camera mainCamera;
     private Vector3f ambientLight;
 
-    // More permanent Structure
+    private Framebuffer framebuffer;
+
     private ArrayList<BaseLight> lights;
     private BaseLight activeLight;
 
-    private CubemapShader cubemapShader;
-    private int skyboxVAO;
+    private Cubemap cubemap;
 
     public RenderingEngine()
     {
@@ -47,10 +48,10 @@ public class RenderingEngine
 
         glEnable(GL_TEXTURE_2D);
 
-        glEnable(GL_MULTISAMPLE);
-
         // set to 0.3f by default
         ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+
+        framebuffer = new Framebuffer();
     }
 
     public Vector3f getAmbientLight()
@@ -65,37 +66,62 @@ public class RenderingEngine
 
     public void render(GameObject object)
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        framebuffer.bind(true);
 
-        // displaying cubemap
-        if (cubemapShader != null) {
-            glDepthFunc(GL_LEQUAL);
-            cubemapShader.bind();
-            cubemapShader.updateUniforms(this);
-            glBindVertexArray(skyboxVAO);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            glBindVertexArray(0);
+        // whole rendering stage
+        {
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            // displaying cubemap
+            if (cubemap != null) {
+                glDepthFunc(GL_LEQUAL);
+                cubemap.getCubemapShader().bind();
+                cubemap.getCubemapShader().updateUniforms(cubemap, this);
+                glBindVertexArray(cubemap.getSkyboxVAO());
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+                glBindVertexArray(0);
+                glDepthFunc(GL_LESS);
+            }
+
+            // blending all colors from multiple shader passes
+            glEnable(GL_BLEND);
+            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
+            Shader forwardAmbient = ForwardAmbient.getInstance();
+            object.renderAll(forwardAmbient, this);
+
+            glDepthMask(false);
+            glDepthFunc(GL_EQUAL);
+
+            for (BaseLight light : lights) {
+                activeLight = light;
+                object.renderAll(light.getShader(), this);
+            }
+
             glDepthFunc(GL_LESS);
+            glDepthMask(true);
+            glDisable(GL_BLEND);
         }
 
-        // blending all colors from multiple shader passes
-        glEnable(GL_BLEND);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        framebuffer.bind(false);
+        glDisable(GL_DEPTH_CLAMP);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
 
-        Shader forwardAmbient = ForwardAmbient.getInstance();
-        object.renderAll(forwardAmbient, this);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-        glDepthMask(false);
-        glDepthFunc(GL_EQUAL);
+        framebuffer.getFbShader().bind();
+        glBindVertexArray(framebuffer.getQuadVAO());
+        glActiveTexture(0);
+        glBindTexture(GL_TEXTURE_2D, framebuffer.getColorbufferTexture());
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        for (BaseLight light : lights) {
-            activeLight = light;
-            object.renderAll(light.getShader(), this);
-        }
-
-        glDepthFunc(GL_LESS);
-        glDepthMask(true);
-        glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_CLAMP);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CW);
+        glCullFace(GL_BACK);
     }
 
     public static String getOpenGLVersion()
@@ -130,70 +156,7 @@ public class RenderingEngine
 
     public void setCubemap(String[] faces)
     {
-        cubemapShader = new CubemapShader(new Cubemap(faces));
-
-        float skyboxVertices[] = {
-                // positions
-                -1.0f,  1.0f, -1.0f,
-                -1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f,  1.0f, -1.0f,
-                -1.0f,  1.0f, -1.0f,
-
-                -1.0f, -1.0f,  1.0f,
-                -1.0f, -1.0f, -1.0f,
-                -1.0f,  1.0f, -1.0f,
-                -1.0f,  1.0f, -1.0f,
-                -1.0f,  1.0f,  1.0f,
-                -1.0f, -1.0f,  1.0f,
-
-                 1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-
-                -1.0f, -1.0f,  1.0f,
-                -1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f, -1.0f,  1.0f,
-                -1.0f, -1.0f,  1.0f,
-
-                -1.0f,  1.0f, -1.0f,
-                 1.0f,  1.0f, -1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                -1.0f,  1.0f,  1.0f,
-                -1.0f,  1.0f, -1.0f,
-
-                -1.0f, -1.0f, -1.0f,
-                -1.0f, -1.0f,  1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                -1.0f, -1.0f,  1.0f,
-                 1.0f, -1.0f,  1.0f
-        };
-        FloatBuffer buffer = Util.createFlippedBuffer(skyboxVertices);
-
-        int skyboxVAO, skyboxVBO;
-        skyboxVAO = glGenVertexArrays();
-        skyboxVBO = glGenBuffers();
-
-        glBindVertexArray(skyboxVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-
-        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * 4, 0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        this.skyboxVAO = skyboxVAO;
+        this.cubemap = new Cubemap(faces, new CubemapShader());
     }
 
 }

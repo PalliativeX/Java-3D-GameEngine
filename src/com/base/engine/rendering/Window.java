@@ -26,6 +26,7 @@ public class Window
 
     public static void render()
     {
+        // bug here
         Display.update();
     }
 

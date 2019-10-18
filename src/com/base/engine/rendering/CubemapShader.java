@@ -5,13 +5,11 @@ import com.sun.javafx.geom.Matrix3f;
 
 public class CubemapShader extends Shader
 {
-    private Cubemap cubemap;
 
-    public CubemapShader(Cubemap cubemap)
+    public CubemapShader()
     {
         super();
 
-        this.cubemap = cubemap;
 
         addVertexShaderFromFile("cubemap.vert");
         addFragmentShaderFromFile("cubemap.frag");
@@ -20,7 +18,7 @@ public class CubemapShader extends Shader
         addUniform("viewProjection");
     }
 
-    public void updateUniforms(RenderingEngine renderingEngine)
+    public void updateUniforms(Cubemap cubemap, RenderingEngine renderingEngine)
     {
         Matrix4f projectedMatrix = renderingEngine.getMainCamera().getViewProjection().removeTranslation();
 
