@@ -1,5 +1,7 @@
 #version 330
 
+out vec4 FragColor;
+
 in vec2 TexCoord;
 
 uniform vec3 ambientIntensity;
@@ -11,5 +13,5 @@ void main()
     if (color.a < 0.125)
         discard;
 
-    gl_FragColor = color * vec4(ambientIntensity, 1.0);
+    FragColor = color * vec4(ambientIntensity, 1.0);
 }

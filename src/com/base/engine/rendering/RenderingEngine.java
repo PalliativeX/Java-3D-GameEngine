@@ -106,7 +106,7 @@ public class RenderingEngine
 
         framebuffer.getFramebufferShader().bind();
         framebuffer.getFramebufferShader().updateUniforms(isBlurEnabled);
-        glBindVertexArray(framebuffer.getQuadVAO());
+        framebuffer.bindQuadVAO(true);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glEnable(GL_DEPTH_CLAMP);

@@ -132,6 +132,14 @@ public class Framebuffer
         return quadVAO;
     }
 
+    public void bindQuadVAO(boolean bind)
+    {
+        if (bind)
+            glBindVertexArray(quadVAO);
+        else
+            glBindVertexArray(0);
+    }
+
     @Override
     protected void finalize() throws Throwable
     {
@@ -148,8 +156,8 @@ public class Framebuffer
         {
             super();
 
-            addVertexShaderFromFile("finalShader.vert");
-            addFragmentShaderFromFile("finalShader.frag");
+            addVertexShaderFromFile("postprocessing.vert");
+            addFragmentShaderFromFile("postprocessing.frag");
             compileShader();
 
             addUniform("screenTexture");

@@ -164,4 +164,10 @@ public class Shader
         return shaderSource.toString();
     }
 
+    @Override
+    protected void finalize() throws Throwable
+    {
+        glDeleteProgram(program);
+    }
+
 }
