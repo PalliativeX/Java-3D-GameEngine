@@ -2,7 +2,6 @@ package com.base.engine.components;
 
 import com.base.engine.core.*;
 import com.base.engine.core.math.*;
-import com.base.engine.rendering.Window;
 
 public class Camera extends GameComponent
 {

@@ -13,7 +13,7 @@ uniform PointLight pointLight;
 
 void main()
 {
-    vec3 normal = normalize(TBNmatrix * (255.0/128.0 * texture2D(normalMap, TexCoord.xy).xyz - 1));
+    vec3 normal = normalize(TBNmatrix * (2.0 * texture2D(normalMap, TexCoord.xy).xyz - 1));
     FragColor = texture(diffuse, TexCoord.xy) * calcPointLight(pointLight, normal, FragPos);
 }
 

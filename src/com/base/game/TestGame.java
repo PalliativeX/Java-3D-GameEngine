@@ -139,6 +139,11 @@ public class TestGame extends Game
         };
         getCoreEngine().getRenderingEngine().setSkybox(faces);
         //getCoreEngine().getRenderingEngine().setBlurEnabled(true);
+
+        GameObject mirror = new GameObject().addComponent(new Mirror(mesh));
+        mirror.getTransform().setPosition(new Vector3f(1, 3, 7));
+        mirror.getTransform().setScale(new Vector3f(0.3f, 0.3f, 0.3f));
+        addObject(mirror);
     }
 
 }

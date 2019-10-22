@@ -19,12 +19,13 @@ public class RenderingEngine
     private Camera mainCamera;
     private Vector3f ambientLight;
 
-    private Framebuffer framebuffer;
+    private Framebuffer postprocessingFB;
 
     private ArrayList<BaseLight> lights;
     private BaseLight activeLight;
 
     private Skybox skybox;
+    private EnvironmentalMapper environmentalMapper;
 
     // different post-processing effects
     private boolean isBlurEnabled = false;
@@ -45,7 +46,7 @@ public class RenderingEngine
 
         ambientLight = new Vector3f(0.15f, 0.15f, 0.15f);
 
-        framebuffer = new Framebuffer();
+        postprocessingFB = new Framebuffer();
     }
 
     public Vector3f getAmbientLight()
@@ -60,7 +61,7 @@ public class RenderingEngine
 
     public void render(GameObject object)
     {
-        framebuffer.bind(true);
+        postprocessingFB.bind(true);
 
         // whole rendering stage
         {
@@ -93,20 +94,23 @@ public class RenderingEngine
                 object.renderAll(light.getShader(), this);
             }
 
+            //object.renderAll(environmentalMapper, this);
+
             glDepthFunc(GL_LESS);
             glDepthMask(true);
             glDisable(GL_BLEND);
         }
 
-        framebuffer.bind(false);
+        postprocessingFB.bind(false);
+
         glDisable(GL_DEPTH_CLAMP);
         glDisable(GL_DEPTH_TEST);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        framebuffer.getFramebufferShader().bind();
-        framebuffer.getFramebufferShader().updateUniforms(isBlurEnabled);
-        framebuffer.bindQuadVAO(true);
+        postprocessingFB.getFramebufferShader().bind();
+        postprocessingFB.getFramebufferShader().updateUniforms(isBlurEnabled);
+        postprocessingFB.bindQuadVAO(true);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glEnable(GL_DEPTH_CLAMP);
@@ -146,11 +150,13 @@ public class RenderingEngine
     public void setSkybox(String[] faces)
     {
         this.skybox = new Skybox(faces);
+        environmentalMapper = EnvironmentalMapper.getInstance();
+        EnvironmentalMapper.setSkybox(skybox);
     }
 
-    public Framebuffer getFramebuffer()
+    public Framebuffer getPostprocessingFB()
     {
-        return framebuffer;
+        return postprocessingFB;
     }
 
     public boolean isBlurEnabled()
