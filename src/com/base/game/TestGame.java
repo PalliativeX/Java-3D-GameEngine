@@ -39,11 +39,17 @@ public class TestGame extends Game
         mosaicMaterial.addFloat("specularIntensity", 1);
         mosaicMaterial.addFloat("specularPower", 8);
 
+        Material bushMaterial = new Material();
+        bushMaterial.addTexture("diffuse", new Texture("bush.png"));
+        bushMaterial.addTexture("normalMap", new Texture("bushNormal.png"));
+        bushMaterial.addFloat("specularIntensity", 0.3f);
+        bushMaterial.addFloat("specularPower", 4);
+
         Material grassMaterial = new Material();
-        grassMaterial.addTexture("diffuse", new Texture("grass.png"));
-        grassMaterial.addTexture("normalMap", new Texture("grassNormal.png"));
-        grassMaterial.addFloat("specularIntensity", 0.3f);
-        grassMaterial.addFloat("specularPower", 4);
+        grassMaterial.addTexture("diffuse", new Texture("snow.jpg"));
+        grassMaterial.addTexture("normalMap", new Texture("snowNormal.png"));
+        grassMaterial.addFloat("specularIntensity", 0.7f);
+        grassMaterial.addFloat("specularPower", 8);
 
         Material semitransparentMaterial = new Material();
         semitransparentMaterial.addTexture("diffuse", new Texture("transparent_window.png"));
@@ -53,12 +59,16 @@ public class TestGame extends Game
 
         Mesh tempMesh = new Mesh("monkey.obj");
 
-        MeshRenderer meshRenderer = new MeshRenderer(mesh, snowMaterial);
+        MeshRenderer meshRenderer = new MeshRenderer(mesh, grassMaterial);
         MeshRenderer meshRenderer2 = new MeshRenderer(mesh, brickMaterial);
 
-        GameObject planeObject = new GameObject();
-        planeObject.addComponent(meshRenderer);
-        planeObject.getTransform().getPosition().set(0, -1, 5);
+        GameObject mainPlane = new GameObject();
+        mainPlane.addComponent(meshRenderer);
+        mainPlane.getTransform().getPosition().set(0, -1, 5);
+        mainPlane.getTransform().setScale(new Vector3f(10.f, 1.f, 10.f));
+        addObject(mainPlane);
+
+
 
         GameObject planeObject2 = new GameObject();
         planeObject2.addComponent(meshRenderer2);
@@ -67,7 +77,7 @@ public class TestGame extends Game
         planeObject2.getTransform().setScale(new Vector3f(0.3f, 0.3f, 0.3f));
 
         GameObject directionalLightObject = new GameObject();
-        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(0,0,1), 0.4f);
+        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(0.4f,0.4f,1), 0.4f);
 
         directionalLightObject.addComponent(directionalLight);
 
@@ -92,7 +102,6 @@ public class TestGame extends Game
         pointLightObject2.addComponent(new PointLight(new Vector3f(1.f,0.5f,0.5f), 0.9f, new Attenuation(0,0,0.6f)));
         pointLightObject2.getTransform().setPosition(new Vector3f(0, 3, 1));
 
-        addObject(planeObject);
         addObject(planeObject2);
 
         addObject(directionalLightObject);
@@ -109,7 +118,7 @@ public class TestGame extends Game
         GameObject cameraObject = new GameObject().addComponent(new FreeLook(0.5f)).addComponent(new FreeMove(10.0f)).addComponent(new Camera((float) Math.toRadians(70.0f), (float) Window.getWidth() / (float) Window.getHeight(), 0.01f, 1000.0f));
         addObject(cameraObject);
 
-        GameObject grassObj = new GameObject().addComponent(new MeshRenderer(mesh, grassMaterial));
+        GameObject grassObj = new GameObject().addComponent(new MeshRenderer(mesh, bushMaterial));
         grassObj.getTransform().setPosition(new Vector3f(3, -0.2f, 6));
         grassObj.getTransform().setScale(new Vector3f(0.1f, 0.1f, 0.1f));
         grassObj.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(90f)));

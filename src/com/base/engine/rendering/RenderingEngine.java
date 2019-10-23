@@ -8,6 +8,7 @@ import com.base.engine.rendering.light.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -21,11 +22,12 @@ public class RenderingEngine
 
     private Framebuffer postprocessingFB;
 
+    private HDRFramebuffer hdrFramebuffer;
+
     private ArrayList<BaseLight> lights;
     private BaseLight activeLight;
 
     private Skybox skybox;
-    private EnvironmentalMapper environmentalMapper;
 
     // different post-processing effects
     private boolean isBlurEnabled = false;
@@ -47,6 +49,8 @@ public class RenderingEngine
         ambientLight = new Vector3f(0.15f, 0.15f, 0.15f);
 
         postprocessingFB = new Framebuffer();
+
+        hdrFramebuffer = new HDRFramebuffer();
     }
 
     public Vector3f getAmbientLight()
@@ -61,7 +65,8 @@ public class RenderingEngine
 
     public void render(GameObject object)
     {
-        postprocessingFB.bind(true);
+        // first render to HDR framebuffer
+        hdrFramebuffer.bind(true);
 
         // whole rendering stage
         {
@@ -94,17 +99,27 @@ public class RenderingEngine
                 object.renderAll(light.getShader(), this);
             }
 
-            //object.renderAll(environmentalMapper, this);
-
             glDepthFunc(GL_LESS);
             glDepthMask(true);
             glDisable(GL_BLEND);
         }
 
-        postprocessingFB.bind(false);
+        // unbind HDR framebuffer and render to postprocessing FB
+        hdrFramebuffer.bind(false);
 
         glDisable(GL_DEPTH_CLAMP);
         glDisable(GL_DEPTH_TEST);
+
+        postprocessingFB.bind(true);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        hdrFramebuffer.getHdrShader().bind();
+        hdrFramebuffer.getHdrShader().updateUniforms(5.f);
+        hdrFramebuffer.bindQuadVAO(true);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        // unbind postprocessing FB and render to default FB
+        postprocessingFB.bind(false);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -150,7 +165,7 @@ public class RenderingEngine
     public void setSkybox(String[] faces)
     {
         this.skybox = new Skybox(faces);
-        environmentalMapper = EnvironmentalMapper.getInstance();
+        EnvironmentalMapper.getInstance();
         EnvironmentalMapper.setSkybox(skybox);
     }
 

@@ -13,23 +13,24 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
 
-public class Framebuffer
+public class HDRFramebuffer
 {
     private int fbo;
 
     private int rbo;
     private int colorbufferTexture;
     private int quadVAO;
-    private FramebufferShader framebufferShader;
 
-    public Framebuffer()
+    private HDRShader hdrShader;
+
+    public HDRFramebuffer()
     {
-        framebufferShader = new FramebufferShader();
+        hdrShader = new HDRShader();
 
         fbo = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-        addColorAttachment(Window.getWidth(), Window.getHeight());
+        addFloatColorAttachment(Window.getWidth(), Window.getHeight());
         addDepthAttachment(Window.getWidth(), Window.getHeight());
 
         setFBVertexArray();
@@ -42,7 +43,7 @@ public class Framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    public void addColorAttachment(int width, int height)
+    public void addFloatColorAttachment(int width, int height)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
@@ -50,7 +51,7 @@ public class Framebuffer
         glBindTexture(GL_TEXTURE_2D, colorbufferTexture);
 
         // create an empty texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer)null);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer)null);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -79,13 +80,13 @@ public class Framebuffer
     private void setFBVertexArray()
     {
         float quadVertices[] = {
-                  // positions    texCoords
-                    -1.f, -1.f,   0.f, 0.f,
-                    -1.f,  1.f,   0.f, 1.f,
-                     1.f,  1.f,   1.f, 1.f,
-                     1.f,  1.f,   1.f, 1.f,
-                     1.f, -1.f,   1.f, 0.f,
-                    -1.f, -1.f,   0.f, 0.f,
+                // positions    texCoords
+                -1.f, -1.f,   0.f, 0.f,
+                -1.f,  1.f,   0.f, 1.f,
+                 1.f,  1.f,   1.f, 1.f,
+                 1.f,  1.f,   1.f, 1.f,
+                 1.f, -1.f,   1.f, 0.f,
+                -1.f, -1.f,   0.f, 0.f,
         };
 
         quadVAO = glGenVertexArrays();
@@ -117,11 +118,6 @@ public class Framebuffer
         }
     }
 
-    public final FramebufferShader getFramebufferShader()
-    {
-        return framebufferShader;
-    }
-
     public int getColorbufferTexture()
     {
         return colorbufferTexture;
@@ -140,6 +136,11 @@ public class Framebuffer
             glBindVertexArray(0);
     }
 
+    public HDRShader getHdrShader()
+    {
+        return hdrShader;
+    }
+
     @Override
     protected void finalize() throws Throwable
     {
@@ -150,28 +151,27 @@ public class Framebuffer
 
     }
 
-    final class FramebufferShader extends Shader
+    public final class HDRShader extends Shader
     {
-        FramebufferShader()
+
+        public HDRShader()
         {
             super();
 
-            addVertexShaderFromFile("postprocessing.vert");
-            addFragmentShaderFromFile("postprocessing.frag");
+            addVertexShaderFromFile("hdr.vert");
+            addFragmentShaderFromFile("hdr.frag");
             compileShader();
 
-            addUniform("screenTexture");
-            addUniform("blurEnabled");
+            addUniform("exposure");
         }
 
-        void updateUniforms(boolean isBlurEnabled)
+        public void updateUniforms(float exposure)
         {
-            setUniformi("blurEnabled", isBlurEnabled ? 1 : 0);
-
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, getColorbufferTexture());
-        }
 
+            setUniformf("exposure", exposure);
+        }
     }
 
 }
