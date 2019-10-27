@@ -77,7 +77,7 @@ public class TestGame extends Game
         planeObject2.getTransform().setScale(new Vector3f(0.3f, 0.3f, 0.3f));
 
         GameObject directionalLightObject = new GameObject();
-        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(0.4f,0.4f,1), 0.4f);
+        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(15f,0.4f,15.f), 0.5f);
 
         directionalLightObject.addComponent(directionalLight);
 
@@ -136,7 +136,7 @@ public class TestGame extends Game
 
         //Window.setFullScreen();
 
-        getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.2f, 0.2f, 0.2f));
+        getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.15f, 0.15f, 0.15f));
 
         String[] faces = {
                 "skybox/right.jpg",
