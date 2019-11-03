@@ -2,14 +2,18 @@ package com.base.engine.rendering;
 
 import com.base.engine.components.*;
 import com.base.engine.core.GameObject;
+import com.base.engine.core.Util;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.light.*;
 
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL14.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
@@ -21,6 +25,7 @@ public class RenderingEngine
     private Vector3f ambientLight;
 
     private Framebuffer postprocessingFB;
+    private PostprocessingShader postprocessingShader;
 
     private HDRFramebuffer hdrFramebuffer;
 
@@ -49,8 +54,11 @@ public class RenderingEngine
         ambientLight = new Vector3f(0.15f, 0.15f, 0.15f);
 
         postprocessingFB = new Framebuffer();
+        postprocessingShader = new PostprocessingShader();
 
         hdrFramebuffer = new HDRFramebuffer();
+
+        setQuadVAO();
     }
 
     public Vector3f getAmbientLight()
@@ -114,22 +122,59 @@ public class RenderingEngine
         glClear(GL_COLOR_BUFFER_BIT);
 
         hdrFramebuffer.getHdrShader().bind();
-        hdrFramebuffer.getHdrShader().updateUniforms(5.f);
-        hdrFramebuffer.bindQuadVAO(true);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        hdrFramebuffer.getHdrShader().updateUniforms(2.f);
+        renderQuad();
 
         // unbind postprocessing FB and render to default FB
         postprocessingFB.bind(false);
 
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        postprocessingFB.getFramebufferShader().bind();
-        postprocessingFB.getFramebufferShader().updateUniforms(isBlurEnabled);
-        postprocessingFB.bindQuadVAO(true);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        postprocessingShader.bind();
+        postprocessingShader.updateUniforms(isBlurEnabled, postprocessingFB.getColorbufferTexture());
+        renderQuad();
 
         glEnable(GL_DEPTH_CLAMP);
         glEnable(GL_DEPTH_TEST);
+    }
+
+
+    private int quadVAO;
+    private void setQuadVAO()
+    {
+        float quadVertices[] = {
+                // positions    texCoords
+                -1.f, -1.f,   0.f, 0.f,
+                -1.f,  1.f,   0.f, 1.f,
+                 1.f,  1.f,   1.f, 1.f,
+                 1.f,  1.f,   1.f, 1.f,
+                 1.f, -1.f,   1.f, 0.f,
+                -1.f, -1.f,   0.f, 0.f,
+        };
+
+        quadVAO = glGenVertexArrays();
+        int quadVBO = glGenBuffers();
+
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+
+        glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(quadVertices), GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * 4, 0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 4 * 4, 8);
+
+        glBindBuffer(GL_ARRAY_BUFFER,0);
+        glBindVertexArray(0);
+
+        glDeleteBuffers(quadVBO);
+    }
+
+    // rendering whole screen texture as a quad
+    private void renderQuad()
+    {
+        glBindVertexArray(quadVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
     }
 
     public static String getOpenGLVersion()
