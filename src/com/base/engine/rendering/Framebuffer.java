@@ -12,7 +12,7 @@ public class Framebuffer
 
     private int colorbufferTexture;
     private int rbo;
-    
+
     public Framebuffer()
     {
         fbo = glGenFramebuffers();
