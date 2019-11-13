@@ -59,10 +59,12 @@ public class GameObject
 
     public void renderAll(Shader shader, RenderingEngine renderingEngine)
     {
-        render(shader, renderingEngine);
+        if (isActive) {
+            render(shader, renderingEngine);
 
-        for (GameObject child : children)
-            child.renderAll(shader, renderingEngine);
+            for (GameObject child : children)
+                child.renderAll(shader, renderingEngine);
+        }
     }
 
     public void input(float delta)
@@ -81,8 +83,10 @@ public class GameObject
 
     public void render(Shader shader, RenderingEngine renderingEngine)
     {
-        for (GameComponent component : components)
-            component.render(shader, renderingEngine);
+        if (isActive) {
+            for (GameComponent component : components)
+                component.render(shader, renderingEngine);
+        }
     }
 
     public ArrayList<GameObject> getAllAttached()
@@ -123,6 +127,15 @@ public class GameObject
     public void setActive(boolean active)
     {
         isActive = active;
+    }
+
+    // sets target bool for both GameObj and all children
+    public void setActiveRecursively(boolean active)
+    {
+        isActive = active;
+
+        for (GameObject child : children)
+            child.setActiveRecursively(active);
     }
 
 }

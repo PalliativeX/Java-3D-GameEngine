@@ -4,6 +4,10 @@ import com.base.engine.core.math.Matrix4f;
 import com.base.engine.rendering.Vertex;
 import org.lwjgl.BufferUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -103,6 +107,63 @@ public class Util
             result[i] = data[i].intValue();
 
         return result;
+    }
+
+    // a struct for holding all relevant image data
+    public static class ImageData
+    {
+        public ByteBuffer pixelBuffer;
+        public int width;
+        public int height;
+
+        public ImageData(ByteBuffer pixelBuffer, int width, int height)
+        {
+            this.pixelBuffer = pixelBuffer;
+            this.height = height;
+            this.width = width;
+        }
+
+        public ImageData()
+        {
+            pixelBuffer = null;
+            width = 0;
+            height = 0;
+        }
+    }
+
+    public static ImageData loadImage(String fileName)
+    {
+        try {
+            ImageData imageData = new ImageData();
+
+            BufferedImage image = ImageIO.read(new File("./resources/textures/" + fileName));
+            imageData.width = image.getWidth();
+            imageData.height = image.getHeight();
+
+            int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+
+            ByteBuffer buffer = Util.createByteBuffer(image.getHeight() * image.getWidth() * 3);
+
+            for (int y = 0; y < image.getHeight(); y++) {
+                for (int x = 0; x < image.getWidth(); x++) {
+                    int pixel = pixels[y * image.getWidth() + x];
+
+                    buffer.put((byte) ((pixel >> 16) & 0xFF));
+                    buffer.put((byte) ((pixel >> 8) & 0xFF));
+                    buffer.put((byte) ((pixel) & 0xFF));
+                }
+            }
+            buffer.flip();
+            imageData.pixelBuffer = buffer;
+            return imageData;
+        }
+        catch (IOException e) {
+            System.out.println("Skybox texture failed to load!");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return new ImageData();
     }
 
 }

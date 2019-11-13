@@ -3,12 +3,6 @@ package com.base.engine.rendering;
 import com.base.engine.core.Util;
 import com.base.engine.core.math.Matrix4f;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -16,9 +10,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Skybox
 {
@@ -163,17 +155,16 @@ public class Skybox
         return skyboxShader;
     }
 
-    private int imageWidth, imageHeight;
     private int loadCubemap(String[] faces)
     {
         int cubemapID = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapID);
 
-        int width, height, nrChannels;
         for (int i = 0; i < FACES_NUM; i++) {
-            ByteBuffer buffer = loadImage(faces[i]);
-            if (buffer != null) {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB8, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+
+            Util.ImageData imageData = Util.loadImage(faces[i]);
+            if (imageData.pixelBuffer != null) {
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB8, imageData.width, imageData.height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData.pixelBuffer);
             }
             else {
                 System.out.println("Skybox texture failed to load at path: ");
@@ -188,38 +179,6 @@ public class Skybox
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
         return cubemapID;
-    }
-
-    private ByteBuffer loadImage(String fileName)
-    {
-        try {
-            BufferedImage image = ImageIO.read(new File("./resources/textures/" + fileName));
-            imageWidth = image.getWidth();
-            imageHeight = image.getHeight();
-
-            int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
-
-            ByteBuffer buffer = Util.createByteBuffer(image.getHeight() * image.getWidth() * 3);
-
-            for (int y = 0; y < image.getHeight(); y++) {
-                for (int x = 0; x < image.getWidth(); x++) {
-                    int pixel = pixels[y * image.getWidth() + x];
-
-                    buffer.put((byte) ((pixel >> 16) & 0xFF));
-                    buffer.put((byte) ((pixel >> 8) & 0xFF));
-                    buffer.put((byte) ((pixel) & 0xFF));
-                }
-            }
-            buffer.flip();
-            return buffer;
-        }
-        catch (IOException e) {
-            System.out.println("Skybox texture failed to load!");
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        return null;
     }
 
     @Override
