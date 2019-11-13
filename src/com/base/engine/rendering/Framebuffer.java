@@ -48,7 +48,6 @@ public class Framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    // prob memory leak
     public void addDepthAttachment()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);

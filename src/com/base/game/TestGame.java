@@ -68,18 +68,18 @@ public class TestGame extends Game
         mainPlane.getTransform().setScale(new Vector3f(10.f, 1.f, 10.f));
         addObject(mainPlane);
 
-
-
         GameObject planeObject2 = new GameObject();
         planeObject2.addComponent(meshRenderer2);
         planeObject2.getTransform().getPosition().set(2, 1, 2);
         planeObject2.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(90)));
         planeObject2.getTransform().setScale(new Vector3f(0.3f, 0.3f, 0.3f));
 
+        // Directional light
         GameObject directionalLightObject = new GameObject();
-        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(0.4f,0.4f,1), 0.4f);
-
+        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(1f,1f,1), 0.6f);
         directionalLightObject.addComponent(directionalLight);
+        directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-45)));
+        addObject(directionalLightObject);
 
         GameObject pointLightObject = new GameObject();
         pointLightObject.addComponent(new PointLight(new Vector3f(0,1,0), 0.4f, new Attenuation(0,0,1)));
@@ -104,7 +104,6 @@ public class TestGame extends Game
 
         addObject(planeObject2);
 
-        addObject(directionalLightObject);
         addObject(pointLightObject);
         addObject(pointLightObject2);
         addObject(spotLightObject);
@@ -126,8 +125,6 @@ public class TestGame extends Game
 
         addObject(new GameObject().addComponent(new MeshRenderer(new Mesh("monkey.obj"), snowMaterial)));
 
-        directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-45)));
-
         GameObject windowObj = new GameObject().addComponent(new MeshRenderer(mesh, semitransparentMaterial));
         windowObj.getTransform().setPosition(new Vector3f(3, 0, 9));
         windowObj.getTransform().setScale(new Vector3f(0.1f, 0.1f, 0.1f));
@@ -136,7 +133,7 @@ public class TestGame extends Game
 
         //Window.setFullScreen();
 
-        getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.2f, 0.2f, 0.2f));
+        getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.15f, 0.15f, 0.15f));
 
         String[] faces = {
                 "skybox/right.jpg",

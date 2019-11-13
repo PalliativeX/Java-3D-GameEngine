@@ -13,12 +13,15 @@ public class GameObject
     private Transform transform;
     private CoreEngine engine;
 
+    private boolean isActive;
+
     public GameObject()
     {
         children   = new ArrayList<>();
         components = new ArrayList<>();
         transform  = new Transform();
         engine = null;
+        isActive = true;
     }
 
     public GameObject addChild(GameObject child)
@@ -110,6 +113,16 @@ public class GameObject
             for (GameObject child : children)
                 child.setEngine(engine);
         }
+    }
+
+    public boolean isActive()
+    {
+        return isActive;
+    }
+
+    public void setActive(boolean active)
+    {
+        isActive = active;
     }
 
 }

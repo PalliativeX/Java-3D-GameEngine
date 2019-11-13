@@ -11,6 +11,8 @@ public class BaseLight extends GameComponent
     private float intensity;
     private Shader shader;
 
+    private boolean shadowsApplied = false;
+
     public BaseLight(Vector3f color, float intensity)
     {
         this.color = color;
@@ -53,5 +55,13 @@ public class BaseLight extends GameComponent
         this.intensity = intensity;
     }
 
+    public boolean areShadowsApplied()
+    {
+        return shadowsApplied;
+    }
 
+    protected void setShadowsApplied(boolean newShadowsApplied)
+    {
+        this.shadowsApplied = newShadowsApplied;
+    }
 }

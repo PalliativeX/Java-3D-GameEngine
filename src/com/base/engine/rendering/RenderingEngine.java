@@ -3,6 +3,7 @@ package com.base.engine.rendering;
 import com.base.engine.components.*;
 import com.base.engine.core.GameObject;
 import com.base.engine.core.Util;
+import com.base.engine.core.math.Matrix4f;
 import com.base.engine.core.math.Vector3f;
 import com.base.engine.rendering.light.*;
 
@@ -15,6 +16,7 @@ import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
@@ -22,6 +24,11 @@ import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 public class RenderingEngine
 {
     private Camera mainCamera;
+
+    // trial
+    private Camera alternativeCamera;
+    private GameObject alternativeCameraObject;
+
     private Vector3f ambientLight;
 
     private Framebuffer postprocessingFB;
@@ -33,6 +40,13 @@ public class RenderingEngine
     private BaseLight activeLight;
 
     private Skybox skybox;
+
+    private DepthmapFramebuffer depthmapFramebuffer;
+    private DepthShader depthShader = new DepthShader();
+    private Matrix4f lightProjection;
+    private Matrix4f lightSpaceMatrix;
+
+    TestShader testShader = new TestShader();
 
     // different post-processing effects
     private boolean isBlurEnabled = false;
@@ -51,6 +65,9 @@ public class RenderingEngine
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_DEPTH_CLAMP);
 
+        // VAO for rendering the whole screen
+        setQuadVAO();
+
         ambientLight = new Vector3f(0.15f, 0.15f, 0.15f);
 
         postprocessingFB = new Framebuffer();
@@ -58,7 +75,12 @@ public class RenderingEngine
 
         hdrFramebuffer = new HDRFramebuffer();
 
-        setQuadVAO();
+        depthmapFramebuffer = new DepthmapFramebuffer();
+        depthShader = new DepthShader();
+        lightProjection = new Matrix4f().initOrthographic(-10.f, 10.f, -10.f, 10.f, 1.f, 10.f);
+
+        alternativeCamera = new Camera(45, 16/9f, 0.5f, 30f);
+        alternativeCameraObject = new GameObject().addComponent(alternativeCamera);
     }
 
     public Vector3f getAmbientLight()
@@ -104,7 +126,39 @@ public class RenderingEngine
 
             for (BaseLight light : lights) {
                 activeLight = light;
-                object.renderAll(light.getShader(), this);
+
+                if (activeLight.areShadowsApplied()) {
+                    glViewport(0, 0, DepthmapFramebuffer.SHADOW_WIDTH, DepthmapFramebuffer.SHADOW_HEIGHT);
+                    depthmapFramebuffer.bind(true);
+                    glClear(GL_DEPTH_BUFFER_BIT);
+                    // configure shader
+                    depthShader.bind();
+
+                    // alternative camera
+                    alternativeCamera.getTransform().setPosition(activeLight.getTransform().getTransformedPosition());
+                    alternativeCamera.getTransform().setRotation(activeLight.getTransform().getTransformedRotation());
+                    // set projection
+                    //alternativeCamera.getTransform().(lightProjection);
+
+                    Matrix4f lightSpaceMatrix = alternativeCamera.getViewProjection();
+                    this.lightSpaceMatrix = lightSpaceMatrix;
+
+                    depthShader.updateUniforms(activeLight.getTransform().getTransformation(), lightSpaceMatrix);
+                    // render
+                    object.renderAll(depthShader, this);
+
+                    depthmapFramebuffer.bind(false);
+                    testShader.bind();
+                    glBindTexture(GL_TEXTURE_2D, depthmapFramebuffer.getDepthMap());
+                    renderQuad();
+
+
+                    // render as normal with shadow map
+                    depthmapFramebuffer.bind(false);
+                    hdrFramebuffer.bind(true);
+                    glViewport(0, 0, Window.getWidth(), Window.getHeight());
+               }
+                object.renderAll(activeLight.getShader(), this);
             }
 
             glDepthFunc(GL_LESS);
@@ -122,7 +176,7 @@ public class RenderingEngine
         glClear(GL_COLOR_BUFFER_BIT);
 
         hdrFramebuffer.getHdrShader().bind();
-        hdrFramebuffer.getHdrShader().updateUniforms(2.f);
+        hdrFramebuffer.getHdrShader().updateUniforms(1.f);
         renderQuad();
 
         // unbind postprocessing FB and render to default FB
@@ -212,6 +266,16 @@ public class RenderingEngine
         this.skybox = new Skybox(faces);
         EnvironmentalMapper.getInstance();
         EnvironmentalMapper.setSkybox(skybox);
+    }
+
+    // @TODO: change, now is a crutch
+    public int getShadowMap()
+    {
+        return depthmapFramebuffer.getDepthMap();
+    }
+    public Matrix4f getLightSpaceMatrix()
+    {
+        return lightSpaceMatrix;
     }
 
     public Framebuffer getPostprocessingFB()

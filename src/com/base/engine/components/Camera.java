@@ -22,6 +22,16 @@ public class Camera extends GameComponent
         return projection.multiply(cameraRotation.multiply(cameraTranslation));
     }
 
+    public void setProjection(float fov, float aspectRatio, float zNear, float zFar)
+    {
+        this.projection = new Matrix4f().initPerspective(fov, aspectRatio, zNear, zFar);
+    }
+
+    public void setProjection(Matrix4f projection)
+    {
+        this.projection = projection;
+    }
+
     @Override
     public void addToEngine(CoreEngine engine)
     {

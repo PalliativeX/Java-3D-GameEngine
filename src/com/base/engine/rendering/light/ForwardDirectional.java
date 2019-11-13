@@ -8,6 +8,10 @@ import com.base.engine.rendering.Material;
 import com.base.engine.rendering.RenderingEngine;
 import com.base.engine.rendering.Shader;
 
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+
 public class ForwardDirectional extends Shader
 {
     private static ForwardDirectional instance;
@@ -30,6 +34,7 @@ public class ForwardDirectional extends Shader
 
         addUniform("model");
         addUniform("MVP");
+        addUniform("lightSpaceMatrix");
 
         addUniform("specularIntensity");
         addUniform("specularPower");
@@ -38,6 +43,7 @@ public class ForwardDirectional extends Shader
         addUniform("directionalLight.base.color");
         addUniform("directionalLight.base.intensity");
         addUniform("directionalLight.direction");
+
     }
 
     public void updateUniforms(Transform transform, Material material, RenderingEngine renderingEngine)
@@ -47,15 +53,20 @@ public class ForwardDirectional extends Shader
 
         material.getTexture("diffuse").bind(0);
         material.getTexture("normalMap").bind(1);
+        glActiveTexture(2);
+        glBindTexture(GL_TEXTURE_2D, renderingEngine.getShadowMap());
 
         setUniformMat4("model", worldMatrix);
         setUniformMat4("MVP", projectedMatrix);
+        setUniformMat4("lightSpaceMatrix", renderingEngine.getLightSpaceMatrix());
 
         setUniformf("specularIntensity", material.getFloat("specularIntensity"));
         setUniformf("specularPower", material.getFloat("specularPower"));
         setUniformVec3("eyePos", renderingEngine.getMainCamera().getTransform().getTransformedPosition());
 
         setUniformDirLight("directionalLight", (DirectionalLight) renderingEngine.getActiveLight());
+
+
     }
 
     private void setUniformBaseLight(String uniformName, BaseLight baseLight)

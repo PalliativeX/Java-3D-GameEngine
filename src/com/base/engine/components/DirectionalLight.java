@@ -9,6 +9,8 @@ public class DirectionalLight extends BaseLight
     {
         super(color, intensity);
 
+        setShadowsApplied(true);
+
         setShader(ForwardDirectional.getInstance());
     }
 

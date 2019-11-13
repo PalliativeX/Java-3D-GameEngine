@@ -8,8 +8,11 @@ out vec2 TexCoord;
 out vec3 FragPos;
 out mat3 TBNmatrix;
 
+out vec4 FragPosLightSpace;
+
 uniform mat4 model;
 uniform mat4 MVP;
+uniform mat4 lightSpaceMatrix;
 
 void main()
 {
@@ -23,4 +26,6 @@ void main()
 
     vec3 biTangent = cross(t, n);
     TBNmatrix = mat3(t, biTangent, n);
+
+    FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 }
