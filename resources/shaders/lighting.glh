@@ -4,7 +4,7 @@ uniform float specularPower;
 
 struct BaseLight
 {
-    vec3 color;
+    vec4 color;
     float intensity;
 };
 
@@ -45,7 +45,7 @@ vec4 calcLight(BaseLight base, vec3 direction, vec3 normal, vec3 fragPos)
     vec4 specularColor = vec4(0, 0, 0, 0);
 
     if (diffuseFactor > 0) {
-        diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
+        diffuseColor = base.color * base.intensity * diffuseFactor;
 
         // calculating specular color
         vec3 directionToEye = normalize(eyePos - fragPos);
@@ -57,7 +57,7 @@ vec4 calcLight(BaseLight base, vec3 direction, vec3 normal, vec3 fragPos)
         specularFactor = pow(specularFactor, specularPower);
 
         if (specularFactor > 0) {
-            specularColor = vec4(base.color, 1.0) * specularIntensity * specularFactor;
+            specularColor = base.color * specularIntensity * specularFactor;
         }
     }
 

@@ -1,5 +1,7 @@
 package com.base.engine.rendering;
 
+import com.base.engine.core.math.Vector3f;
+
 // @TODO: add support for HSV colors, Color addition, multiplication etc.
 public final class Color
 {
@@ -21,16 +23,60 @@ public final class Color
         this.a = a;
     }
 
+    public Vector3f toVec3()
+    {
+        return new Vector3f(r, g, b);
+    }
+
     public float maxColorComponent()
     {
         return Math.max(r, Math.max(g, b));
     }
 
+    public Color multiply(float f)
+    {
+        return new Color(this.r * f, this.g * f, this.b * f, a);
+    }
 
-//    public static Color Lerp(Color a, Color b, float t)
-//    {
-//
-//    }
+    public Color add(float f)
+    {
+        return new Color(this.r + f, this.g + f, this.b + f, a);
+    }
+
+    public Color subtract(float f)
+    {
+        return new Color(this.r - f, this.g - f, this.b - f, a);
+    }
+
+    public Color divide(float f)
+    {
+        return new Color(this.r / f, this.g / f, this.b / f, a);
+    }
+
+    public Color multiply(Color r)
+    {
+        return new Color(this.r * r.r, this.g * r.g, this.b * r.b, a);
+    }
+
+    public Color add(Color r)
+    {
+        return new Color(this.r + r.r, this.g + r.g, this.b + r.b, a);
+    }
+
+    public Color subtract(Color r)
+    {
+        return new Color(this.r - r.r, this.g - r.g, this.b - r.b, a);
+    }
+
+    public Color divide(Color r)
+    {
+        return new Color(this.r / r.r, this.g / r.g, this.b / r.b, a / r.a);
+    }
+
+    public static Color lerp(Color a, Color b, float t)
+    {
+        return a.multiply(1 - t).add(b.multiply(t));
+    }
 
     @Override
     public boolean equals(Object o)

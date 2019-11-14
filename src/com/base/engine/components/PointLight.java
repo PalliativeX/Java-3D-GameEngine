@@ -19,7 +19,7 @@ public class PointLight extends BaseLight
         // calculating the possible range
         float a = attenuation.getExponent();
         float b = attenuation.getLinear();
-        float c = attenuation.getConstant() - COLOR_DEPTH * getIntensity() * getColor().max();
+        float c = attenuation.getConstant() - COLOR_DEPTH * getIntensity() * getColor().maxColorComponent();
 
         this.range = (float)(-b + Math.sqrt(b * b - 4 * a * c))/(2 * a);
 

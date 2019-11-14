@@ -61,7 +61,7 @@ public class ForwardSpot extends Shader
 
     private void setUniformBaseLight(String uniformName, BaseLight baseLight)
     {
-        setUniformVec3(uniformName + ".color", baseLight.getColor());
+        setVec4(uniformName + ".color", baseLight.getColor());
         setUniformf(uniformName + ".intensity", baseLight.getIntensity());
     }
 

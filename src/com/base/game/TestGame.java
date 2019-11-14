@@ -62,11 +62,13 @@ public class TestGame extends Game
         MeshRenderer meshRenderer = new MeshRenderer(mesh, grassMaterial);
         MeshRenderer meshRenderer2 = new MeshRenderer(mesh, brickMaterial);
 
-        GameObject mainPlane = new GameObject();
+        GameObject mainPlane = new GameObject("Plane");
         mainPlane.addComponent(meshRenderer);
         mainPlane.getTransform().getPosition().set(0, -1, 5);
         mainPlane.getTransform().setScale(new Vector3f(10.f, 1.f, 10.f));
         addObject(mainPlane);
+
+        System.out.println(GameObject.findGameObjectWithTag("Plane").getTransform().getPosition().toString());
 
         GameObject planeObject2 = new GameObject();
         planeObject2.addComponent(meshRenderer2);

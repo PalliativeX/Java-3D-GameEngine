@@ -130,6 +130,11 @@ public class Shader
         glUniform3f(uniforms.get(uniformName), value.getX(), value.getY(), value.getZ());
     }
 
+    public void setVec4(String uniformName, Color color)
+    {
+        glUniform4f(uniforms.get(uniformName), color.r, color.g, color.b, color.a);
+    }
+
     public void setUniformMat4(String uniformName, Matrix4f value)
     {
         glUniformMatrix4(uniforms.get(uniformName), true, Util.createFlippedBuffer(value));
