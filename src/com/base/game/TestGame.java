@@ -1,10 +1,12 @@
 package com.base.game;
 
 import com.base.engine.components.*;
+import com.base.engine.core.Debug;
 import com.base.engine.core.Game;
 import com.base.engine.core.GameObject;
 import com.base.engine.core.math.Quaternion;
 import com.base.engine.core.math.Vector3f;
+import com.base.engine.objects.Cube;
 import com.base.engine.rendering.*;
 import com.base.engine.rendering.light.Attenuation;
 
@@ -65,23 +67,33 @@ public class TestGame extends Game
         GameObject mainPlane = new GameObject("Plane");
         mainPlane.addComponent(meshRenderer);
         mainPlane.getTransform().getPosition().set(0, -1, 5);
-        mainPlane.getTransform().setScale(new Vector3f(10.f, 1.f, 10.f));
+        mainPlane.getTransform().setScale(new Vector3f(3.f, 3.f, 3.f));
         addObject(mainPlane);
 
-        System.out.println(GameObject.findGameObjectWithTag("Plane").getTransform().getPosition().toString());
+        //System.out.println(GameObject.findGameObjectWithTag("Plane").getTransform().getPosition().toString());
 
-        GameObject planeObject2 = new GameObject();
-        planeObject2.addComponent(meshRenderer2);
-        planeObject2.getTransform().getPosition().set(2, 1, 2);
-        planeObject2.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(90)));
-        planeObject2.getTransform().setScale(new Vector3f(0.3f, 0.3f, 0.3f));
+        // a bugged wall
+//        GameObject planeObject2 = new GameObject();
+//        planeObject2.addComponent(meshRenderer2);
+//        planeObject2.getTransform().getPosition().set(2, 1, 2);
+//        planeObject2.getTransform().setRotation(new Quaternion(new Vector3f(0, 0, 1), (float)Math.toRadians(135)));
+//        planeObject2.getTransform().setScale(new Vector3f(0.3f, 0.3f, 0.3f));
+//        addObject(planeObject2);
 
         // Directional light
         GameObject directionalLightObject = new GameObject();
         DirectionalLight directionalLight = new DirectionalLight(new Vector3f(1f,1f,1), 0.6f);
         directionalLightObject.addComponent(directionalLight);
-        directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-45)));
+        directionalLight.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-60)));
         addObject(directionalLightObject);
+
+        // Directional light
+//        GameObject directionalLightObject2 = new GameObject();
+//        DirectionalLight directionalLight2 = new DirectionalLight(new Vector3f(1f,1f,2), 0.4f);
+//        directionalLightObject2.addComponent(directionalLight2);
+//        directionalLight2.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float) Math.toRadians(-70)));
+//        directionalLight2.getTransform().setPosition(new Vector3f(3, 4, 0));
+//        addObject(directionalLightObject2);
 
         GameObject pointLightObject = new GameObject();
         pointLightObject.addComponent(new PointLight(new Vector3f(0,1,0), 0.4f, new Attenuation(0,0,1)));
@@ -103,8 +115,6 @@ public class TestGame extends Game
         GameObject pointLightObject2 = new GameObject();
         pointLightObject2.addComponent(new PointLight(new Vector3f(1.f,0.5f,0.5f), 0.9f, new Attenuation(0,0,0.6f)));
         pointLightObject2.getTransform().setPosition(new Vector3f(0, 3, 1));
-
-        addObject(planeObject2);
 
         addObject(pointLightObject);
         addObject(pointLightObject2);
@@ -133,8 +143,6 @@ public class TestGame extends Game
         windowObj.getTransform().setRotation(new Quaternion(new Vector3f(1, 0, 0), (float)Math.toRadians(-90f)));
         addObject(windowObj);
 
-        //Window.setFullScreen();
-
         getCoreEngine().getRenderingEngine().setAmbientLight(new Vector3f(0.15f, 0.15f, 0.15f));
 
         String[] faces = {
@@ -152,6 +160,20 @@ public class TestGame extends Game
         mirror.getTransform().setPosition(new Vector3f(1, 3, 7));
         mirror.getTransform().setScale(new Vector3f(0.3f, 0.3f, 0.3f));
         addObject(mirror);
+
+
+        Cube cube = new Cube(brickMaterial);
+        cube.getTransform().setPosition(new Vector3f(5, 0, 5));
+        addObject(cube);
+
+//        Debug.logInfo("Hello");
+//        Debug.logWarning("Hello");
+//        Debug.logException("Hello");
+//        Debug.logError("Hello");
+
+        Debug.logInfo("Player position: " + getCoreEngine().getRenderingEngine().getMainCamera().getTransform().getTransformedPosition().toString());
+
+
     }
 
 }

@@ -12,6 +12,11 @@ public class Camera extends GameComponent
         this.projection = new Matrix4f().initPerspective(fov, aspectRatio, zNear, zFar);
     }
 
+    public Camera(float left, float right, float bottom, float top, float near, float far)
+    {
+        this.projection = new Matrix4f().initOrthographic(left, right, bottom, top, near, far);
+    }
+
     public Matrix4f getViewProjection()
     {
         Matrix4f cameraRotation = getTransform().getTransformedRotation().conjugate().toRotationMatrix();
@@ -22,7 +27,7 @@ public class Camera extends GameComponent
         return projection.multiply(cameraRotation.multiply(cameraTranslation));
     }
 
-    public void setProjection(float fov, float aspectRatio, float zNear, float zFar)
+    public void setPerspectiveProjection(float fov, float aspectRatio, float zNear, float zFar)
     {
         this.projection = new Matrix4f().initPerspective(fov, aspectRatio, zNear, zFar);
     }
@@ -30,6 +35,11 @@ public class Camera extends GameComponent
     public void setProjection(Matrix4f projection)
     {
         this.projection = projection;
+    }
+
+    public void setOrthgraphicProjection(float left, float right, float bottom, float top, float near, float far)
+    {
+        this.projection = new Matrix4f().initOrthographic(left, right, bottom, top, near, far);
     }
 
     @Override

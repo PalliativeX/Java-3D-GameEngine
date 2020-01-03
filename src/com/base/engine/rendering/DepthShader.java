@@ -12,13 +12,11 @@ public class DepthShader extends Shader
         addFragmentShaderFromFile("simpleDepthShader.frag");
         compileShader();
 
-        addUniform("model");
         addUniform("lightSpaceMatrix");
     }
 
-    public void updateUniforms(Matrix4f lightSpaceMatrix, Matrix4f model)
+    public void updateUniforms(Matrix4f lightSpaceMatrix)
     {
-        setUniformMat4("model", model);
         setUniformMat4("lightSpaceMatrix", lightSpaceMatrix);
     }
 

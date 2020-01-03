@@ -1,5 +1,7 @@
 package com.base.engine.core.math;
 
+import java.util.Arrays;
+
 public class Matrix4f
 {
     private float[][] m;
@@ -182,5 +184,12 @@ public class Matrix4f
         m[x][y] = value;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Matrix4f{" +
+                "m=" + Arrays.toString(m) +
+                '}';
+    }
 
 }

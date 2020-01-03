@@ -1,6 +1,7 @@
 package com.base.engine.rendering;
 
 import com.base.engine.components.*;
+import com.base.engine.core.Debug;
 import com.base.engine.core.GameObject;
 import com.base.engine.core.Util;
 import com.base.engine.core.math.Matrix4f;
@@ -16,7 +17,6 @@ import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
@@ -45,6 +45,8 @@ public class RenderingEngine
     private DepthShader depthShader = new DepthShader();
     private Matrix4f lightProjection;
     private Matrix4f lightSpaceMatrix;
+
+    private Matrix4f viewProjectionMatrix;
 
     TestShader testShader = new TestShader();
 
@@ -77,9 +79,8 @@ public class RenderingEngine
 
         depthmapFramebuffer = new DepthmapFramebuffer();
         depthShader = new DepthShader();
-        lightProjection = new Matrix4f().initOrthographic(-10.f, 10.f, -10.f, 10.f, 1.f, 10.f);
 
-        alternativeCamera = new Camera(45, 16/9f, 0.5f, 30f);
+        alternativeCamera = new Camera(-30.f, 30.f, -30.f, 30.f, .1f, 100.f);
         alternativeCameraObject = new GameObject().addComponent(alternativeCamera);
     }
 
@@ -134,16 +135,16 @@ public class RenderingEngine
                     // configure shader
                     depthShader.bind();
 
+                    //System.out.println("Transformed pos: " + activeLight.getTransform().getTransformedPosition().toString());
+
                     // alternative camera
                     alternativeCamera.getTransform().setPosition(activeLight.getTransform().getTransformedPosition());
                     alternativeCamera.getTransform().setRotation(activeLight.getTransform().getTransformedRotation());
                     // set projection
-                    //alternativeCamera.getTransform().(lightProjection);
-
                     Matrix4f lightSpaceMatrix = alternativeCamera.getViewProjection();
                     this.lightSpaceMatrix = lightSpaceMatrix;
 
-                    depthShader.updateUniforms(activeLight.getTransform().getTransformation(), lightSpaceMatrix);
+                    depthShader.updateUniforms(lightSpaceMatrix);
                     // render
                     object.renderAll(depthShader, this);
 
@@ -151,7 +152,6 @@ public class RenderingEngine
                     testShader.bind();
                     glBindTexture(GL_TEXTURE_2D, depthmapFramebuffer.getDepthMap());
                     renderQuad();
-
 
                     // render as normal with shadow map
                     depthmapFramebuffer.bind(false);
@@ -268,7 +268,7 @@ public class RenderingEngine
         EnvironmentalMapper.setSkybox(skybox);
     }
 
-    // @TODO: change, now is a crutch
+    // HACK: change, now is a crutch
     public int getShadowMap()
     {
         return depthmapFramebuffer.getDepthMap();
@@ -276,6 +276,14 @@ public class RenderingEngine
     public Matrix4f getLightSpaceMatrix()
     {
         return lightSpaceMatrix;
+    }
+
+    public Matrix4f getViewProjection()
+    {
+//        if (mainCamera == null || mainCamera.getViewProjection() == null)
+            return new Matrix4f();
+//        else
+//            return mainCamera.getViewProjection();
     }
 
     public Framebuffer getPostprocessingFB()

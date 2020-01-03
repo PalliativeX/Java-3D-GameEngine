@@ -38,6 +38,8 @@ public class FreeMove extends GameComponent
             move(getTransform().getRotation().getLeft(), movAmt);
         if(Input.getKey(rightKey))
             move(getTransform().getRotation().getRight(), movAmt);
+
+        System.out.println(getTransform().getTransformedPosition().toString());
     }
 
     private void move(Vector3f dir, float amt)
